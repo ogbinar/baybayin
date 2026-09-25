@@ -12,6 +12,11 @@ const supportedWord = fc
   .map((letters) => letters.join(''));
 
 describe('engine properties', () => {
+  it('normalizes replacement boundaries to a stable value', () => {
+    expect(adaptToFilipino('phha').value).toBe('pa');
+    expect(adaptToFilipino(adaptToFilipino('phha').value).value).toBe('pa');
+  });
+
   it('normalization is idempotent', () => {
     fc.assert(
       fc.property(supportedWord, (word) => {

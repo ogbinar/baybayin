@@ -147,18 +147,23 @@ export function adaptToFilipino(input: string): {
     value = accentsNormalized;
   }
 
-  for (const rule of REPLACEMENT_RULES) {
-    const next = value.replace(rule.pattern, rule.replacement);
-    if (next !== value) {
-      adaptations.push({
-        ruleId: rule.id,
-        before: value,
-        after: next,
-        explanation: rule.explanation,
-      });
-      value = next;
+  let replacementsApplied = false;
+  do {
+    replacementsApplied = false;
+    for (const rule of REPLACEMENT_RULES) {
+      const next = value.replace(rule.pattern, rule.replacement);
+      if (next !== value) {
+        adaptations.push({
+          ruleId: rule.id,
+          before: value,
+          after: next,
+          explanation: rule.explanation,
+        });
+        value = next;
+        replacementsApplied = true;
+      }
     }
-  }
+  } while (replacementsApplied);
 
   value = value.replace(/\s+/g, ' ');
   return { value, adaptations };
