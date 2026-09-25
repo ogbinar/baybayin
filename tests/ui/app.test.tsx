@@ -27,7 +27,7 @@ describe('Pantig app', () => {
 
   it('offers vertical flow and multiple image backgrounds', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('radio', { name: /Vertical/ }));
+    fireEvent.click(screen.getByRole('radio', { name: /Stacked/ }));
     fireEvent.click(screen.getByRole('radio', { name: 'Paper' }));
     expect(screen.getByTestId('glyph-preview')).toHaveClass('flow-vertical');
     expect(screen.getByTestId('glyph-preview')).toHaveClass('background-paper');
@@ -38,5 +38,15 @@ describe('Pantig app', () => {
     fireEvent.click(screen.getByRole('radio', { name: 'Dark' }));
     expect(document.documentElement).toHaveAttribute('data-theme', 'dark');
     expect(window.localStorage.getItem('pantig-theme')).toBe('dark');
+  });
+
+  it('links to the compact external source set', () => {
+    render(<App />);
+    expect(screen.getByRole('link', { name: 'National Museum of the Philippines' })).toHaveAttribute(
+      'href',
+      'https://www.nationalmuseum.gov.ph/exhibitions/anthropology/baybayin/',
+    );
+    expect(screen.getByRole('link', { name: 'Unicode Standard' })).toBeVisible();
+    expect(screen.getByRole('link', { name: 'NCCA Philippine History Source Book' })).toBeVisible();
   });
 });

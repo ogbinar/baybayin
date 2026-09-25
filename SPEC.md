@@ -143,7 +143,7 @@ The result screen contains:
 - original name and confirmed pronunciation;
 - visible syllable chips;
 - convention selector: Pamudpod, Virama, Traditional;
-- text-flow selector: horizontal or top-to-bottom vertical;
+- layout selector: horizontal or stacked design layout;
 - image-background selector: transparent, paper, forest, or terracotta;
 - light/dark appearance selector, initially following the system preference and
   remembering an explicit choice independently of image-export styling;
@@ -203,8 +203,11 @@ The visible result, SVG, and PNG must derive from the same structured result.
 - Traditional mode contains neither U+1714 nor U+1715.
 - Pamudpod and virama results differ only in killer code points.
 - Copy, SVG, card PNG, and transparent PNG work without a backend.
-- Horizontal/vertical flow and every background option are previewed before
+- Horizontal/stacked layout and every background option are previewed before
   export and produce deterministic filenames.
+- The methodology section links to the National Museum of the Philippines,
+  Unicode Standard, and NCCA Philippine History Source Book, and distinguishes
+  sourced script facts from Pantig's own editable sound-matching suggestions.
 - Light and dark appearance themes remain legible, honor the system preference
   on first visit, and remember a user-selected theme locally.
 - A reviewed golden corpus contains at least 30 representative cases before

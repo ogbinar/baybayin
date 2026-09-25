@@ -4,7 +4,7 @@ export type ColorTheme = 'light' | 'dark';
 
 export const TEXT_FLOWS: Array<{ id: TextFlow; label: string; detail: string }> = [
   { id: 'horizontal', label: 'Horizontal', detail: 'Left to right' },
-  { id: 'vertical', label: 'Vertical', detail: 'Top to bottom' },
+  { id: 'vertical', label: 'Stacked', detail: 'Design layout' },
 ];
 
 export const IMAGE_BACKGROUNDS: Array<{

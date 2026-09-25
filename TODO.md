@@ -70,3 +70,6 @@
 - [x] Rewrite the interface in a warm, practical, English-first Filipino voice.
 - [x] Introduce `bigkas` and `pantig` in context without forced Taglish.
 - [x] Put spelling uncertainty and permanent-use guidance beside the result.
+- [x] Add a compact three-source methodology note.
+- [x] Relabel the top-to-bottom export as a stacked design rather than a
+  historical vertical writing direction.

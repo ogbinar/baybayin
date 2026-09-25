@@ -454,6 +454,26 @@ function App() {
               Pantig is a learning and transliteration aid. Its current rules and examples have not
               yet received expert linguistic review.
             </p>
+            <div className="sources-note">
+              <strong>Sources and notes</strong>
+              <p>
+                Learn more from the{' '}
+                <a href="https://www.nationalmuseum.gov.ph/exhibitions/anthropology/baybayin/" target="_blank" rel="noreferrer">
+                  National Museum of the Philippines
+                </a>, the{' '}
+                <a href="https://unicode.org/versions/Unicode17.0.0/core-spec/chapter-17/" target="_blank" rel="noreferrer">
+                  Unicode Standard
+                </a>, and the{' '}
+                <a href="https://ncca.gov.ph/wp-content/uploads/2021/09/PHILIPPINE-HISTORY-SOURCE-BOOK-FINAL-SEP022021.pdf" target="_blank" rel="noreferrer">
+                  NCCA Philippine History Source Book
+                </a>.
+              </p>
+              <p>
+                Pantig’s suggestions for modern names are editable sound matches created by this
+                tool. These sources explain the script; they do not certify one official spelling
+                for a person’s name.
+              </p>
+            </div>
           </div>
         </section>
       </main>

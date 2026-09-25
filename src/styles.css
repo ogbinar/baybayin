@@ -908,6 +908,30 @@ input {
   line-height: 1.7;
 }
 
+.sources-note {
+  margin-top: 28px;
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.sources-note strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.sources-note p {
+  margin-bottom: 9px;
+}
+
+.sources-note a {
+  color: var(--brown);
+  font-weight: 700;
+  text-underline-offset: 4px;
+}
+
 footer {
   display: flex;
   min-height: 100px;

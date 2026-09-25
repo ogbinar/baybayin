@@ -46,7 +46,7 @@ test('generates portable SVG and PNG downloads', async ({ page }) => {
 
 test('exports the selected vertical flow and background', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('radio', { name: /Vertical/ }).click();
+  await page.getByRole('radio', { name: /Stacked/ }).click();
   await page.getByRole('radio', { name: 'Terracotta' }).click();
   await expect(page.getByTestId('glyph-preview')).toHaveClass(/flow-vertical/);
   await expect(page.getByTestId('glyph-preview')).toHaveClass(/background-terracotta/);

@@ -17,7 +17,7 @@ a learning and transliteration aid, not a source of official spellings.
 - Modern pamudpod, cross-virama, and traditional-style comparison modes
 - Per-syllable Unicode traceability
 - Copyable Unicode output
-- Horizontal and top-to-bottom vertical presentation
+- Horizontal presentation and a stacked design layout
 - Transparent, paper, forest, and terracotta image backgrounds
 - System-aware light and dark appearance themes with a remembered preference
 - 1080 × 1350 card PNG and path-based SVG export
@@ -66,6 +66,15 @@ variables, API keys, database, or backend are required.
 - `TECHNICAL_RESEARCH.md` — evaluated libraries and implementation research
 - `SPEC.md` — frozen MVP contract
 - `TODO.md` — implementation and verification status
+
+## Sources
+
+The interface links to a compact external source set: the National Museum of
+the Philippines for cultural and historical context, the Unicode Standard for
+encoded characters and writing mechanics, and the NCCA Philippine History
+Source Book for an early documented description. Pantig's editable modern-name
+sound matches remain product suggestions rather than externally certified
+spellings.
 
 ## Fonts
 
