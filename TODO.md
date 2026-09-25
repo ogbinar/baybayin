@@ -109,4 +109,4 @@
   checks.
 - [x] Update static fallback HTML, metadata, README, and browser tests.
 - [x] Run the full local verification gate before pushing.
-- [ ] Verify the exact pushed commit in Dokploy and smoke-test production.
+- [x] Verify the exact pushed commit in Dokploy and smoke-test production.
