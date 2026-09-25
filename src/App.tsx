@@ -136,13 +136,13 @@ function App() {
   };
 
   return (
-    <div className="site-shell">
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="Pantig home">
+    <div className="site-shell mx-auto w-full max-w-[1480px] px-[42px] max-[980px]:px-6 max-[660px]:px-[14px]">
+      <header className="site-header flex min-h-[90px] items-center justify-between border-b border-line max-[660px]:min-h-[74px]">
+        <a className="brand inline-flex items-center gap-3 text-xl font-[680] tracking-[0.08em] text-ink no-underline uppercase" href="#top" aria-label="Pantig home">
           <span className="brand-mark">ᜉ</span>
           <span>Pantig</span>
         </a>
-        <div className="header-actions">
+        <div className="header-actions flex items-center gap-[18px] max-[660px]:gap-[9px]">
           <div className="theme-picker" role="radiogroup" aria-label="Color theme">
             {(['light', 'dark'] as const).map((theme) => (
               <button
@@ -157,20 +157,20 @@ function App() {
               </button>
             ))}
           </div>
-          <a className="method-link" href="#method">How it works</a>
+          <a className="method-link text-brown underline-offset-[5px] max-[660px]:text-[13px]" href="#method">How it works</a>
         </div>
       </header>
 
       <main id="top">
-        <section className="hero" aria-labelledby="hero-title">
-          <p className="eyebrow">Baybayin for your name</p>
-          <h1 id="hero-title">Your name, written by sound.</h1>
+        <section className="hero grid grid-cols-[minmax(0,0.9fr)_minmax(320px,1.1fr)] items-end gap-16 pt-[46px] pb-[34px] max-[660px]:grid-cols-1 max-[660px]:gap-4 max-[660px]:px-1 max-[660px]:pt-[52px] max-[660px]:pb-[38px]" aria-labelledby="hero-title">
+          <p className="eyebrow col-span-full -mb-[46px] max-[660px]:col-span-1 max-[660px]:mb-0">Baybayin for your name</p>
+          <h1 className="mb-0 max-w-[680px] text-[clamp(42px,5.5vw,76px)] leading-[0.98] font-[520] tracking-[-0.055em] max-[660px]:text-[clamp(46px,15vw,68px)]" id="hero-title">Your name, written by sound.</h1>
           <div className="hero-support">
-            <p className="hero-copy">
+            <p className="hero-copy mb-0 max-w-[620px] text-[clamp(18px,2vw,23px)] leading-[1.55] text-[#4d5e59] dark:text-[#bcc6c0] max-[660px]:text-[17px]">
               Baybayin follows how a name is said, not how it is spelled. Choose the closest
               bigkas, check each pantig, and save the result.
             </p>
-            <a className="hero-link" href="#name">Try your name ↓</a>
+            <a className="hero-link mt-4 inline-block text-[13px] font-bold text-brown underline-offset-[5px]" href="#name">Try your name ↓</a>
           </div>
         </section>
 
@@ -478,11 +478,11 @@ function App() {
         </section>
       </main>
 
-      <footer>
-        <span>Pantig</span>
+      <footer className="flex min-h-[100px] items-center justify-between border-t border-line text-[13px] text-muted dark:text-[#9da8a2] max-[660px]:flex-col max-[660px]:items-start max-[660px]:justify-center max-[660px]:gap-2">
+        <span className="font-[760] tracking-[0.13em] text-ink uppercase">Pantig</span>
         <span>
           A guide to writing names by sound.{' '}
-          <a href="https://github.com/ogbinar/baybayin" target="_blank" rel="noreferrer">
+          <a className="font-bold text-inherit underline-offset-4 hover:text-ink" href="https://github.com/ogbinar/baybayin" target="_blank" rel="noreferrer">
             View the code on GitHub
           </a>
         </span>

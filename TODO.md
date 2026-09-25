@@ -73,3 +73,6 @@
 - [x] Add a compact three-source methodology note.
 - [x] Relabel the top-to-bottom export as a stacked design rather than a
   historical vertical writing direction.
+- [x] Introduce Tailwind CSS v4 theme tokens and migrate the shared shell,
+  header, hero, responsive layout, and footer without changing Pantig's visual
+  identity.

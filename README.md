@@ -23,6 +23,8 @@ a learning and transliteration aid, not a source of official spellings.
 - 1080 × 1350 card PNG and path-based SVG export
 - Standalone glyph PNG export at 1600 × 520 horizontal or 720 × 1600 vertical
 - Responsive, client-only React application
+- Tailwind CSS v4 theme tokens and utilities for the shared interface, with
+  focused custom CSS for Baybayin rendering and export-specific presentation
 
 The 30-case corpus in `data/golden-cases.json` is a technical regression
 fixture. It has not yet received expert linguistic review, so the app should
@@ -36,6 +38,10 @@ npm run dev
 ```
 
 The development server listens on all interfaces. Vite prints the local URL.
+
+The interface theme is defined in `src/styles.css` through Tailwind theme
+tokens for Pantig's paper, ink, forest, terracotta, brown, line, and muted
+colors. The existing `data-theme` attribute drives the light and dark variants.
 
 ## Verify
 

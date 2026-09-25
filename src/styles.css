@@ -1,3 +1,7 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
 @font-face {
   font-family: 'Pantig Sans';
   src: url('/fonts/NotoSans-Regular.ttf') format('truetype');
@@ -53,6 +57,19 @@
   --muted: #aab4ae;
 }
 
+@theme inline {
+  --font-sans: 'Pantig Sans', system-ui, sans-serif;
+  --font-baybayin: 'Pantig Baybayin', sans-serif;
+  --color-ink: var(--ink);
+  --color-forest: var(--forest);
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-terracotta: var(--terracotta);
+  --color-brown: var(--brown);
+  --color-line: var(--line);
+  --color-muted: var(--muted);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -97,32 +114,6 @@ a:focus-visible {
   outline-offset: 3px;
 }
 
-.site-shell {
-  width: min(100%, 1480px);
-  margin: 0 auto;
-  padding: 0 42px;
-}
-
-.site-header {
-  min-height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--line);
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--ink);
-  text-decoration: none;
-  font-size: 20px;
-  font-weight: 680;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .brand-mark {
   display: grid;
   width: 42px;
@@ -133,17 +124,6 @@ a:focus-visible {
   background: var(--forest);
   font-family: 'Pantig Baybayin';
   font-size: 25px;
-}
-
-.method-link {
-  color: var(--brown);
-  text-underline-offset: 5px;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 18px;
 }
 
 .theme-picker {
@@ -181,20 +161,6 @@ a:focus-visible {
   background: #eee8dc;
 }
 
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
-  max-width: none;
-  align-items: end;
-  gap: 64px;
-  padding: 46px 0 34px;
-}
-
-.hero .eyebrow {
-  grid-column: 1 / -1;
-  margin-bottom: -46px;
-}
-
 .eyebrow {
   margin: 0 0 18px;
   color: var(--terracotta);
@@ -208,32 +174,6 @@ h1,
 h2,
 p {
   margin-top: 0;
-}
-
-h1 {
-  max-width: 680px;
-  margin-bottom: 0;
-  font-size: clamp(42px, 5.5vw, 76px);
-  font-weight: 520;
-  line-height: 0.98;
-  letter-spacing: -0.055em;
-}
-
-.hero-copy {
-  max-width: 620px;
-  margin-bottom: 0;
-  color: #4d5e59;
-  font-size: clamp(18px, 2vw, 23px);
-  line-height: 1.55;
-}
-
-.hero-link {
-  display: inline-block;
-  margin-top: 16px;
-  color: var(--brown);
-  font-size: 13px;
-  font-weight: 700;
-  text-underline-offset: 5px;
 }
 
 .workbench {
@@ -932,34 +872,6 @@ input {
   text-underline-offset: 4px;
 }
 
-footer {
-  display: flex;
-  min-height: 100px;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 13px;
-}
-
-footer span:first-child {
-  color: var(--ink);
-  font-weight: 760;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
-footer a {
-  color: inherit;
-  font-weight: 700;
-  text-underline-offset: 4px;
-}
-
-footer a:hover {
-  color: var(--ink);
-}
-
-:root[data-theme='dark'] .hero-copy,
 :root[data-theme='dark'] .method-copy {
   color: #bcc6c0;
 }
@@ -1019,15 +931,7 @@ footer a:hover {
   color: #ff9b7d;
 }
 
-:root[data-theme='dark'] footer {
-  color: #9da8a2;
-}
-
 @media (max-width: 980px) {
-  .site-shell {
-    padding: 0 24px;
-  }
-
   .workbench {
     grid-template-columns: 1fr;
   }
@@ -1055,44 +959,9 @@ footer a:hover {
 }
 
 @media (max-width: 660px) {
-  .site-shell {
-    padding: 0 14px;
-  }
-
-  .site-header {
-    min-height: 74px;
-  }
-
-  .method-link {
-    font-size: 13px;
-  }
-
-  .header-actions {
-    gap: 9px;
-  }
-
   .theme-picker button {
     min-width: 40px;
     padding: 0 7px;
-  }
-
-  .hero {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 52px 4px 38px;
-  }
-
-  .hero .eyebrow {
-    grid-column: auto;
-    margin-bottom: 0;
-  }
-
-  h1 {
-    font-size: clamp(46px, 15vw, 68px);
-  }
-
-  .hero-copy {
-    font-size: 17px;
   }
 
   .workbench {
@@ -1177,12 +1046,6 @@ footer a:hover {
     min-height: 170px;
   }
 
-  footer {
-    align-items: flex-start;
-    flex-direction: column;
-    justify-content: center;
-    gap: 8px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
