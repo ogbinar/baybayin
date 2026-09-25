@@ -403,19 +403,68 @@ input {
   content: '';
 }
 
-.baybayin-result {
+.glyph-preview {
   position: relative;
   z-index: 1;
   display: flex;
   min-height: 290px;
   align-items: center;
   justify-content: center;
-  padding: 54px 12px 32px;
+  margin-top: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: min-height 180ms ease, background 180ms ease;
+}
+
+.baybayin-result {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
   font-family: 'Pantig Baybayin';
   font-size: clamp(66px, 8vw, 122px);
   line-height: 1.5;
   text-align: center;
   overflow-wrap: anywhere;
+}
+
+.glyph-preview.flow-vertical {
+  min-height: 590px;
+}
+
+.flow-vertical .baybayin-result {
+  flex-direction: column;
+  gap: 2px;
+  font-size: clamp(54px, 6vw, 78px);
+  line-height: 1.05;
+}
+
+.background-transparent {
+  color: var(--ink);
+  background-color: #f4efe5;
+  background-image:
+    linear-gradient(45deg, rgba(24, 51, 48, 0.055) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(24, 51, 48, 0.055) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(24, 51, 48, 0.055) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(24, 51, 48, 0.055) 75%);
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+  background-size: 24px 24px;
+}
+
+.background-paper {
+  color: #173d38;
+  background: #f1eadc;
+}
+
+.background-forest {
+  color: #fff8ef;
+  background: #173d38;
+}
+
+.background-terracotta {
+  color: #fff8ef;
+  background: #b96346;
 }
 
 .result-name {
@@ -467,6 +516,99 @@ input {
   font-size: 10px;
   opacity: 0.7;
 }
+
+.design-options {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 22px;
+  margin-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  padding-top: 22px;
+}
+
+.option-label {
+  display: block;
+  margin-bottom: 9px;
+  color: rgba(255, 248, 239, 0.66);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.segmented-picker,
+.background-picker {
+  display: grid;
+  gap: 7px;
+}
+
+.segmented-picker {
+  grid-template-columns: 1fr 1fr;
+}
+
+.background-picker {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.segmented-picker button,
+.background-picker button {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9px;
+  color: rgba(255, 248, 239, 0.7);
+  background: transparent;
+  cursor: pointer;
+}
+
+.segmented-picker button {
+  display: grid;
+  min-height: 56px;
+  gap: 2px;
+  place-content: center;
+}
+
+.segmented-picker small,
+.background-picker small {
+  font-size: 9px;
+}
+
+.segmented-picker button.active,
+.background-picker button.active {
+  border-color: rgba(255, 255, 255, 0.68);
+  color: #fff8ef;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.background-picker button {
+  display: grid;
+  min-height: 58px;
+  place-items: center;
+  padding: 7px 3px;
+}
+
+.background-swatch {
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+}
+
+.swatch-transparent {
+  background-color: #f4efe5;
+  background-image:
+    linear-gradient(45deg, #cad0c9 25%, transparent 25%),
+    linear-gradient(-45deg, #cad0c9 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #cad0c9 75%),
+    linear-gradient(-45deg, transparent 75%, #cad0c9 75%);
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+  background-size: 10px 10px;
+}
+
+.swatch-paper { background: #f1eadc; }
+.swatch-forest { background: #173d38; }
+.swatch-terracotta { background: #b96346; }
 
 .result-actions {
   position: relative;
@@ -733,8 +875,20 @@ footer span:first-child {
   }
 
   .baybayin-result {
-    min-height: 230px;
     font-size: clamp(56px, 20vw, 86px);
+  }
+
+  .glyph-preview {
+    min-height: 250px;
+    margin-top: 28px;
+  }
+
+  .glyph-preview.flow-vertical {
+    min-height: 560px;
+  }
+
+  .flow-vertical .baybayin-result {
+    font-size: 58px;
   }
 
   .convention-picker {
@@ -744,6 +898,10 @@ footer span:first-child {
 
   .convention-picker button {
     min-height: 58px;
+  }
+
+  .design-options {
+    grid-template-columns: 1fr;
   }
 
   .result-actions {

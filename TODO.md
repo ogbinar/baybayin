@@ -56,3 +56,11 @@
 - [ ] Optional backend, persistence, analytics, or AI assistance.
 - [x] Publish the repository publicly on GitHub.
 - [x] Deploy through Dokploy at `baybayin.apps.ogbinar.com`.
+
+## Post-MVP presentation options
+
+- [x] Add horizontal and top-to-bottom vertical text flow.
+- [x] Preserve combining marks as one visual unit in vertical flow.
+- [x] Add transparent, paper, forest, and terracotta image backgrounds.
+- [x] Apply the selected flow to card PNG and SVG exports.
+- [x] Add responsive preview and cross-browser export tests.

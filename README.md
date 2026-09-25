@@ -17,8 +17,10 @@ an informed transliteration aid, not a universal spelling authority.
 - Modern pamudpod, cross-virama, and traditional-style comparison modes
 - Per-syllable Unicode traceability
 - Copyable Unicode output
+- Horizontal and top-to-bottom vertical presentation
+- Transparent, paper, forest, and terracotta image backgrounds
 - 1080 × 1350 card PNG and path-based SVG export
-- Transparent 1600 × 520 glyph PNG export
+- Standalone glyph PNG export at 1600 × 520 horizontal or 720 × 1600 vertical
 - Responsive, client-only React application
 
 The 30-case corpus in `data/golden-cases.json` is a technical regression

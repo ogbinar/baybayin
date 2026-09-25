@@ -4,11 +4,17 @@ import { initWasm, Resvg } from '@resvg/resvg-wasm';
 import resvgWasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
 
 import type { Convention, TransliterationResult } from '../domain';
+import {
+  IMAGE_BACKGROUNDS,
+  splitBaybayinClusters,
+  type ImageBackground,
+  type TextFlow,
+} from '../presentation';
 
 const CARD_WIDTH = 1080;
 const CARD_HEIGHT = 1350;
-const TRANSPARENT_WIDTH = 1600;
-const TRANSPARENT_HEIGHT = 520;
+const HORIZONTAL_IMAGE = { width: 1600, height: 520 };
+const VERTICAL_IMAGE = { width: 720, height: 1600 };
 
 let fontPromise: Promise<{ latin: ArrayBuffer; baybayin: ArrayBuffer }> | undefined;
 let wasmPromise: Promise<void> | undefined;
@@ -65,6 +71,22 @@ function baybayinFontSize(value: string, maximum: number): number {
   return Math.round(maximum * 0.46);
 }
 
+function glyphContent(value: string, flow: TextFlow) {
+  if (flow === 'horizontal') return value;
+  return splitBaybayinClusters(value).map((cluster, index) =>
+    createElement(
+      'span',
+      {
+        key: `${cluster}-${index}`,
+        style: cluster === ' '
+          ? { display: 'flex', minHeight: 30 }
+          : { display: 'flex' },
+      },
+      cluster === ' ' ? '\u00a0' : cluster,
+    ),
+  );
+}
+
 async function renderSvg(
   element: ReturnType<typeof createElement>,
   width: number,
@@ -94,8 +116,9 @@ async function renderSvg(
 export async function createCardSvg(
   originalName: string,
   result: TransliterationResult,
+  flow: TextFlow = 'horizontal',
 ): Promise<string> {
-  const glyphSize = baybayinFontSize(result.unicode, 176);
+  const glyphSize = flow === 'vertical' ? 118 : baybayinFontSize(result.unicode, 176);
   const element = createElement(
     'div',
     {
@@ -142,11 +165,13 @@ export async function createCardSvg(
             color: '#173d38',
             maxWidth: 920,
             display: 'flex',
+            flexDirection: flow === 'vertical' ? 'column' : 'row',
             flexWrap: 'wrap',
+            alignItems: 'center',
             justifyContent: 'center',
           },
         },
-        result.unicode,
+        glyphContent(result.unicode, flow),
       ),
       createElement('div', { style: { fontSize: 56, marginTop: 34, letterSpacing: '-0.025em' } }, originalName),
       createElement('div', { style: { fontSize: 26, marginTop: 16, color: '#745746' } }, syllableLine(result)),
@@ -166,8 +191,14 @@ export async function createCardSvg(
   return renderSvg(element, CARD_WIDTH, CARD_HEIGHT);
 }
 
-export async function createTransparentSvg(result: TransliterationResult): Promise<string> {
-  const glyphSize = baybayinFontSize(result.unicode, 260);
+export async function createGlyphSvg(
+  result: TransliterationResult,
+  flow: TextFlow = 'horizontal',
+  background: ImageBackground = 'transparent',
+): Promise<string> {
+  const dimensions = flow === 'vertical' ? VERTICAL_IMAGE : HORIZONTAL_IMAGE;
+  const palette = IMAGE_BACKGROUNDS.find((item) => item.id === background) ?? IMAGE_BACKGROUNDS[0];
+  const glyphSize = flow === 'vertical' ? 138 : baybayinFontSize(result.unicode, 260);
   const element = createElement(
     'div',
     {
@@ -178,16 +209,18 @@ export async function createTransparentSvg(result: TransliterationResult): Promi
         alignItems: 'center',
         justifyContent: 'center',
         padding: '52px 72px',
+        background: palette.color,
         fontFamily: 'Noto Sans Tagalog',
         fontSize: glyphSize,
-        lineHeight: 1.3,
-        color: '#102c29',
+        lineHeight: flow === 'vertical' ? 1.08 : 1.3,
+        color: palette.ink,
         textAlign: 'center',
+        flexDirection: flow === 'vertical' ? 'column' : 'row',
       },
     },
-    result.unicode,
+    glyphContent(result.unicode, flow),
   );
-  return renderSvg(element, TRANSPARENT_WIDTH, TRANSPARENT_HEIGHT);
+  return renderSvg(element, dimensions.width, dimensions.height);
 }
 
 async function svgToPng(svg: string): Promise<Uint8Array> {
@@ -217,31 +250,35 @@ function downloadBlob(blob: Blob, filename: string): void {
 export async function downloadCardSvg(
   originalName: string,
   result: TransliterationResult,
+  flow: TextFlow = 'horizontal',
 ): Promise<void> {
-  const svg = await createCardSvg(originalName, result);
-  downloadBlob(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }), `${safeFilename(originalName)}-baybayin-card.svg`);
+  const svg = await createCardSvg(originalName, result, flow);
+  downloadBlob(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }), `${safeFilename(originalName)}-baybayin-card-${flow}.svg`);
 }
 
 export async function downloadCardPng(
   originalName: string,
   result: TransliterationResult,
+  flow: TextFlow = 'horizontal',
 ): Promise<void> {
-  const svg = await createCardSvg(originalName, result);
+  const svg = await createCardSvg(originalName, result, flow);
   const png = await svgToPng(svg);
   downloadBlob(
     new Blob([Uint8Array.from(png).buffer], { type: 'image/png' }),
-    `${safeFilename(originalName)}-baybayin-card.png`,
+    `${safeFilename(originalName)}-baybayin-card-${flow}.png`,
   );
 }
 
-export async function downloadTransparentPng(
+export async function downloadGlyphPng(
   originalName: string,
   result: TransliterationResult,
+  flow: TextFlow = 'horizontal',
+  background: ImageBackground = 'transparent',
 ): Promise<void> {
-  const svg = await createTransparentSvg(result);
+  const svg = await createGlyphSvg(result, flow, background);
   const png = await svgToPng(svg);
   downloadBlob(
     new Blob([Uint8Array.from(png).buffer], { type: 'image/png' }),
-    `${safeFilename(originalName)}-baybayin-transparent.png`,
+    `${safeFilename(originalName)}-baybayin-${flow}-${background}.png`,
   );
 }

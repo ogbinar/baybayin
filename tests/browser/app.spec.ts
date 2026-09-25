@@ -30,16 +30,30 @@ test('generates portable SVG and PNG downloads', async ({ page }) => {
 
   const svgDownload = page.waitForEvent('download');
   await page.getByRole('button', { name: 'SVG' }).click();
-  await expect((await svgDownload).suggestedFilename()).toBe('angelica-baybayin-card.svg');
+  await expect((await svgDownload).suggestedFilename()).toBe('angelica-baybayin-card-horizontal.svg');
 
   const pngDownload = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download card' }).click();
-  await expect((await pngDownload).suggestedFilename()).toBe('angelica-baybayin-card.png');
+  await expect((await pngDownload).suggestedFilename()).toBe('angelica-baybayin-card-horizontal.png');
 
-  const transparentDownload = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Transparent PNG' }).click();
-  await expect((await transparentDownload).suggestedFilename()).toBe(
-    'angelica-baybayin-transparent.png',
+  const imageDownload = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download image' }).click();
+  await expect((await imageDownload).suggestedFilename()).toBe(
+    'angelica-baybayin-horizontal-transparent.png',
+  );
+});
+
+test('exports the selected vertical flow and background', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('radio', { name: /Vertical/ }).click();
+  await page.getByRole('radio', { name: 'Terracotta' }).click();
+  await expect(page.getByTestId('glyph-preview')).toHaveClass(/flow-vertical/);
+  await expect(page.getByTestId('glyph-preview')).toHaveClass(/background-terracotta/);
+
+  const imageDownload = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download image' }).click();
+  await expect((await imageDownload).suggestedFilename()).toBe(
+    'angelica-baybayin-vertical-terracotta.png',
   );
 });
 

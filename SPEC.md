@@ -143,6 +143,8 @@ The result screen contains:
 - original name and confirmed pronunciation;
 - visible syllable chips;
 - convention selector: Pamudpod, Virama, Traditional;
+- text-flow selector: horizontal or top-to-bottom vertical;
+- image-background selector: transparent, paper, forest, or terracotta;
 - a per-syllable explanation;
 - warnings for adaptations or ambiguity;
 - copy Unicode action;
@@ -161,8 +163,10 @@ The result screen contains:
 
 ### Transparent text
 
-- PNG with a transparent background.
-- Tight visual framing around the Baybayin result.
+- Standalone PNG with transparent, paper, forest, or terracotta background.
+- Horizontal output is 1600 × 520 pixels.
+- Vertical output is 720 × 1600 pixels and keeps Unicode marks attached to
+  their base glyphs.
 - High-resolution output suitable for reuse in another design.
 
 ### SVG
@@ -190,6 +194,8 @@ The visible result, SVG, and PNG must derive from the same structured result.
 - Traditional mode contains neither U+1714 nor U+1715.
 - Pamudpod and virama results differ only in killer code points.
 - Copy, SVG, card PNG, and transparent PNG work without a backend.
+- Horizontal/vertical flow and every background option are previewed before
+  export and produce deterministic filenames.
 - A reviewed golden corpus contains at least 30 representative cases before
   the result is described publicly as validated.
 - Unit/property tests and production build pass.

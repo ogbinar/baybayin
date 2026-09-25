@@ -24,4 +24,12 @@ describe('Pantig app', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Find its form' }));
     expect(screen.getByText(/Use Latin letters/)).toBeVisible();
   });
+
+  it('offers vertical flow and multiple image backgrounds', () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole('radio', { name: /Vertical/ }));
+    fireEvent.click(screen.getByRole('radio', { name: 'Paper' }));
+    expect(screen.getByTestId('glyph-preview')).toHaveClass('flow-vertical');
+    expect(screen.getByTestId('glyph-preview')).toHaveClass('background-paper');
+  });
 });

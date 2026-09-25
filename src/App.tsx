@@ -7,6 +7,13 @@ import {
   type PronunciationCandidate,
   type TransliterationResult,
 } from './domain';
+import {
+  IMAGE_BACKGROUNDS,
+  splitBaybayinClusters,
+  TEXT_FLOWS,
+  type ImageBackground,
+  type TextFlow,
+} from './presentation';
 import './styles.css';
 
 const CONVENTIONS: Array<{ id: Convention; label: string; detail: string }> = [
@@ -38,6 +45,8 @@ function App() {
   const [selectedCandidate, setSelectedCandidate] = useState(initialCandidate.id);
   const [phonetic, setPhonetic] = useState(initialCandidate.phonetic);
   const [convention, setConvention] = useState<Convention>('pamudpod');
+  const [textFlow, setTextFlow] = useState<TextFlow>('horizontal');
+  const [imageBackground, setImageBackground] = useState<ImageBackground>('transparent');
   const [inputError, setInputError] = useState('');
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle');
   const [exportState, setExportState] = useState('');
@@ -65,6 +74,8 @@ function App() {
     setSelectedCandidate(recommended.id);
     setPhonetic(recommended.phonetic);
     setConvention('pamudpod');
+    setTextFlow('horizontal');
+    setImageBackground('transparent');
     setCopyState('idle');
   };
 
@@ -211,8 +222,17 @@ function App() {
 
             {computed.result ? (
               <>
-                <div className="baybayin-result" data-testid="baybayin-result">
-                  {computed.result.unicode}
+                <div
+                  className={`glyph-preview flow-${textFlow} background-${imageBackground}`}
+                  data-testid="glyph-preview"
+                >
+                  <div className="baybayin-result" data-testid="baybayin-result">
+                    {textFlow === 'vertical'
+                      ? splitBaybayinClusters(computed.result.unicode).map((cluster, index) => (
+                        <span key={`${cluster}-${index}`}>{cluster === ' ' ? '\u00a0' : cluster}</span>
+                      ))
+                      : computed.result.unicode}
+                  </div>
                 </div>
                 <div className="result-name">{confirmedName}</div>
                 <div className="result-phonetic">
@@ -235,10 +255,51 @@ function App() {
                   ))}
                 </div>
 
+                <div className="design-options" aria-label="Image style">
+                  <div>
+                    <span className="option-label">Text flow</span>
+                    <div className="segmented-picker" role="radiogroup" aria-label="Text flow">
+                      {TEXT_FLOWS.map((item) => (
+                        <button
+                          type="button"
+                          key={item.id}
+                          className={textFlow === item.id ? 'active' : ''}
+                          role="radio"
+                          aria-checked={textFlow === item.id}
+                          onClick={() => setTextFlow(item.id)}
+                        >
+                          <strong>{item.label}</strong>
+                          <small>{item.detail}</small>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="option-label">Image background</span>
+                    <div className="background-picker" role="radiogroup" aria-label="Image background">
+                      {IMAGE_BACKGROUNDS.map((item) => (
+                        <button
+                          type="button"
+                          key={item.id}
+                          className={imageBackground === item.id ? 'active' : ''}
+                          role="radio"
+                          aria-checked={imageBackground === item.id}
+                          aria-label={item.label}
+                          title={item.label}
+                          onClick={() => setImageBackground(item.id)}
+                        >
+                          <span className={`background-swatch swatch-${item.id}`} />
+                          <small>{item.label}</small>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="result-actions">
                   <button className="primary-action" type="button" onClick={() => runExport('card PNG', async () => {
                     const { downloadCardPng } = await import('./export/image');
-                    await downloadCardPng(confirmedName, computed.result!);
+                    await downloadCardPng(confirmedName, computed.result!, textFlow);
                   })}>
                     Download card
                   </button>
@@ -246,13 +307,13 @@ function App() {
                     {copyState === 'copied' ? 'Copied' : copyState === 'error' ? 'Copy failed' : 'Copy text'}
                   </button>
                   <div className="more-downloads">
-                    <button type="button" onClick={() => runExport('transparent PNG', async () => {
-                      const { downloadTransparentPng } = await import('./export/image');
-                      await downloadTransparentPng(confirmedName, computed.result!);
-                    })}>Transparent PNG</button>
+                    <button type="button" onClick={() => runExport('styled PNG', async () => {
+                      const { downloadGlyphPng } = await import('./export/image');
+                      await downloadGlyphPng(confirmedName, computed.result!, textFlow, imageBackground);
+                    })}>Download image</button>
                     <button type="button" onClick={() => runExport('SVG card', async () => {
                       const { downloadCardSvg } = await import('./export/image');
-                      await downloadCardSvg(confirmedName, computed.result!);
+                      await downloadCardSvg(confirmedName, computed.result!, textFlow);
                     })}>SVG</button>
                   </div>
                 </div>
