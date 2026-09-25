@@ -55,4 +55,4 @@
 - [ ] Optional pronunciation/audio research.
 - [ ] Optional backend, persistence, analytics, or AI assistance.
 - [x] Publish the repository publicly on GitHub.
-- [ ] Deploy through Dokploy after explicit authorization.
+- [x] Deploy through Dokploy at `baybayin.apps.ogbinar.com`.

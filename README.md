@@ -4,6 +4,8 @@ Pantig is a pronunciation-aware Baybayin name transliterator. It suggests one
 or more Filipino-friendly sound forms, lets the user correct the pronunciation,
 shows how each syllable becomes Baybayin, and exports the result as SVG or PNG.
 
+**Live site:** [baybayin.apps.ogbinar.com](https://baybayin.apps.ogbinar.com/)
+
 The app is deliberately deterministic and runs entirely in the browser. It is
 an informed transliteration aid, not a universal spelling authority.
 
