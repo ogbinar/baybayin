@@ -1,5 +1,6 @@
 export type TextFlow = 'horizontal' | 'vertical';
 export type ImageBackground = 'transparent' | 'paper' | 'forest' | 'terracotta';
+export type ColorTheme = 'light' | 'dark';
 
 export const TEXT_FLOWS: Array<{ id: TextFlow; label: string; detail: string }> = [
   { id: 'horizontal', label: 'Horizontal', detail: 'Left to right' },

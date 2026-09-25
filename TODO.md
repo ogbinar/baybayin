@@ -64,3 +64,5 @@
 - [x] Add transparent, paper, forest, and terracotta image backgrounds.
 - [x] Apply the selected flow to card PNG and SVG exports.
 - [x] Add responsive preview and cross-browser export tests.
+- [x] Add system-aware, persistent light and dark appearance themes.
+- [x] Keep interface themes independent from image-export backgrounds.

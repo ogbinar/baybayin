@@ -145,6 +145,8 @@ The result screen contains:
 - convention selector: Pamudpod, Virama, Traditional;
 - text-flow selector: horizontal or top-to-bottom vertical;
 - image-background selector: transparent, paper, forest, or terracotta;
+- light/dark appearance selector, initially following the system preference and
+  remembering an explicit choice independently of image-export styling;
 - a per-syllable explanation;
 - warnings for adaptations or ambiguity;
 - copy Unicode action;
@@ -196,6 +198,8 @@ The visible result, SVG, and PNG must derive from the same structured result.
 - Copy, SVG, card PNG, and transparent PNG work without a backend.
 - Horizontal/vertical flow and every background option are previewed before
   export and produce deterministic filenames.
+- Light and dark appearance themes remain legible, honor the system preference
+  on first visit, and remember a user-selected theme locally.
 - A reviewed golden corpus contains at least 30 representative cases before
   the result is described publicly as validated.
 - Unit/property tests and production build pass.

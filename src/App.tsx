@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   getPronunciationCandidates,
@@ -11,6 +11,7 @@ import {
   IMAGE_BACKGROUNDS,
   splitBaybayinClusters,
   TEXT_FLOWS,
+  type ColorTheme,
   type ImageBackground,
   type TextFlow,
 } from './presentation';
@@ -25,6 +26,15 @@ const CONVENTIONS: Array<{ id: Convention; label: string; detail: string }> = [
 const initialCandidateData = getPronunciationCandidates('Michel');
 const initialCandidate = initialCandidateData.candidates[0];
 
+function initialColorTheme(): ColorTheme {
+  const stored = window.localStorage.getItem('pantig-theme');
+  if (stored === 'light' || stored === 'dark') return stored;
+  return typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
+}
+
 function buildResult(phonetic: string, convention: Convention) {
   try {
     return { result: transliterate(phonetic, convention), error: '' };
@@ -37,6 +47,7 @@ function buildResult(phonetic: string, convention: Convention) {
 }
 
 function App() {
+  const [colorTheme, setColorTheme] = useState<ColorTheme>(initialColorTheme);
   const [name, setName] = useState('Michel');
   const [confirmedName, setConfirmedName] = useState('Michel');
   const [candidates, setCandidates] = useState<PronunciationCandidate[]>(
@@ -50,6 +61,15 @@ function App() {
   const [inputError, setInputError] = useState('');
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle');
   const [exportState, setExportState] = useState('');
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = colorTheme;
+    window.localStorage.setItem('pantig-theme', colorTheme);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute(
+      'content',
+      colorTheme === 'dark' ? '#101918' : '#f1eadc',
+    );
+  }, [colorTheme]);
 
   const computed = useMemo(() => buildResult(phonetic, convention), [phonetic, convention]);
   const comparisons = useMemo(() => {
@@ -113,7 +133,23 @@ function App() {
           <span className="brand-mark">ᜉ</span>
           <span>Pantig</span>
         </a>
-        <a className="method-link" href="#method">How it works</a>
+        <div className="header-actions">
+          <div className="theme-picker" role="radiogroup" aria-label="Color theme">
+            {(['light', 'dark'] as const).map((theme) => (
+              <button
+                type="button"
+                key={theme}
+                role="radio"
+                aria-checked={colorTheme === theme}
+                className={colorTheme === theme ? 'active' : ''}
+                onClick={() => setColorTheme(theme)}
+              >
+                {theme === 'light' ? 'Light' : 'Dark'}
+              </button>
+            ))}
+          </div>
+          <a className="method-link" href="#method">How it works</a>
+        </div>
       </header>
 
       <main id="top">

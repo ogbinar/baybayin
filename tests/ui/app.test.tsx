@@ -32,4 +32,11 @@ describe('Pantig app', () => {
     expect(screen.getByTestId('glyph-preview')).toHaveClass('flow-vertical');
     expect(screen.getByTestId('glyph-preview')).toHaveClass('background-paper');
   });
+
+  it('switches and remembers the color theme', () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole('radio', { name: 'Dark' }));
+    expect(document.documentElement).toHaveAttribute('data-theme', 'dark');
+    expect(window.localStorage.getItem('pantig-theme')).toBe('dark');
+  });
 });

@@ -8,6 +8,14 @@
       content="See your name in Baybayin based on how you actually pronounce it."
     />
     <meta name="theme-color" content="#f1eadc" />
+    <script>
+      try {
+        const savedTheme = localStorage.getItem('pantig-theme');
+        document.documentElement.dataset.theme = savedTheme === 'light' || savedTheme === 'dark'
+          ? savedTheme
+          : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      } catch (_) {}
+    </script>
     <title>Pantig — Your name in Baybayin</title>
   </head>
   <body>

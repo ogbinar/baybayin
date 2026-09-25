@@ -57,6 +57,17 @@ test('exports the selected vertical flow and background', async ({ page }) => {
   );
 });
 
+test('switches and persists the dark appearance', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('radio', { name: 'Dark' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByRole('radio', { name: 'Dark' })).toHaveAttribute('aria-checked', 'true');
+
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByRole('radio', { name: 'Dark' })).toHaveAttribute('aria-checked', 'true');
+});
+
 test('stays within the mobile viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
