@@ -11,12 +11,15 @@ a learning and transliteration aid, not a source of official spellings.
 
 ## Current MVP
 
+- Progressive discovery flow: name → pronunciation → Baybayin reveal
 - Curated alternatives for ambiguous names such as `Michel` → `Misyel` or
   `Mikel`
 - Editable phonetic spelling and visible syllable analysis
 - Modern pamudpod, cross-virama, and traditional-style comparison modes
 - Per-syllable Unicode traceability
 - Copyable Unicode output
+- Clickable Baybayin symbols with short, traceable explanations
+- Primary copy, save-image, and native share actions with a clipboard fallback
 - Horizontal presentation and a stacked design layout
 - Transparent, paper, forest, and terracotta image backgrounds
 - System-aware light and dark appearance themes with a remembered preference
@@ -25,6 +28,8 @@ a learning and transliteration aid, not a source of official spellings.
 - Responsive, client-only React application
 - Tailwind CSS v4 theme tokens and utilities for the shared interface, with
   focused custom CSS for Baybayin rendering and export-specific presentation
+- Crawlable HTML introduction, canonical/social metadata, structured data,
+  `robots.txt`, `sitemap.xml`, and a 1200 × 630 social preview image
 
 The 30-case corpus in `data/golden-cases.json` is a technical regression
 fixture. It has not yet received expert linguistic review, so the app should

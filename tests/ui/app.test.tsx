@@ -1,32 +1,46 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
 import App from '../../src/App';
 
 describe('Pantig app', () => {
-  it('starts with the pronunciation-aware Michel example', () => {
+  function openPronunciation() {
+    fireEvent.click(screen.getByRole('button', { name: 'Show me' }));
+  }
+
+  function revealMisyel() {
+    openPronunciation();
+    fireEvent.click(screen.getByRole('button', { name: /Misyel/ }));
+  }
+
+  it('starts with the name before revealing a result', () => {
     render(<App />);
-    expect(screen.getByTestId('baybayin-result')).toHaveTextContent('ᜋᜒᜐ᜕ᜌᜒᜎ᜕');
-    expect(screen.getByLabelText('Phonetic spelling')).toHaveValue('misyel');
+    expect(screen.getByRole('heading', { name: 'What’s your name?' })).toBeVisible();
+    expect(screen.getByLabelText('Your name')).toHaveValue('Michel');
+    expect(screen.queryByTestId('baybayin-result')).not.toBeInTheDocument();
   });
 
-  it('updates immediately when the phonetic spelling changes', () => {
+  it('confirms pronunciation before revealing the Baybayin result', () => {
     render(<App />);
-    fireEvent.change(screen.getByLabelText('Phonetic spelling'), {
-      target: { value: 'mark' },
-    });
-    expect(screen.getByTestId('baybayin-result')).toHaveTextContent('ᜋᜍ᜕ᜃ᜕');
+    openPronunciation();
+    expect(screen.getByRole('heading', { name: 'How do you say Michel?' })).toBeVisible();
+    fireEvent.click(screen.getByRole('button', { name: /Misyel/ }));
+    expect(screen.getByTestId('baybayin-result')).toHaveTextContent('ᜋᜒᜐ᜕ᜌᜒᜎ᜕');
+    expect(screen.getByLabelText('How the name became Baybayin')).toHaveTextContent('mi · syel');
   });
 
   it('shows an actionable validation error', () => {
     render(<App />);
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: '123' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Show pronunciations' }));
+    fireEvent.change(screen.getByLabelText('Your name'), { target: { value: '123' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Show me' }));
     expect(screen.getByText(/Use Latin letters/)).toBeVisible();
   });
 
-  it('offers vertical flow and multiple image backgrounds', () => {
+  it('keeps advanced writing and image choices optional', () => {
     render(<App />);
+    revealMisyel();
+    expect(screen.getByText('Writing and image options').closest('details')).not.toHaveAttribute('open');
+    fireEvent.click(screen.getByText('Writing and image options'));
     fireEvent.click(screen.getByRole('radio', { name: /Stacked/ }));
     fireEvent.click(screen.getByRole('radio', { name: 'Paper' }));
     expect(screen.getByTestId('glyph-preview')).toHaveClass('flow-vertical');
@@ -56,5 +70,18 @@ describe('Pantig app', () => {
       'href',
       'https://github.com/ogbinar/baybayin',
     );
+  });
+
+  it('copies share text when native sharing is unavailable', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    });
+    render(<App />);
+    revealMisyel();
+    fireEvent.click(screen.getByRole('button', { name: 'Share' }));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith(expect.stringContaining('Michel in Baybayin')));
+    expect(screen.getByRole('status')).toHaveTextContent('Share text copied.');
   });
 });

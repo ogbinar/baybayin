@@ -137,14 +137,22 @@ Filipino-natural candidate when rules produce a distinct form.
 
 ## Result experience
 
+The interface reveals the result progressively:
+
+1. enter a written name;
+2. confirm one suggested pronunciation or edit the bigkas;
+3. reveal the Baybayin result and its conversion trail.
+
 The result screen contains:
 
 - the large Baybayin rendering as the page's primary visual focus;
 - original name and confirmed pronunciation;
+- a concise `name → pantig → Baybayin` conversion trail;
+- selectable Baybayin glyph clusters with plain-language explanations;
 - visible syllable chips;
-- convention selector: Pamudpod, Virama, Traditional;
-- layout selector: horizontal or stacked design layout;
-- image-background selector: transparent, paper, forest, or terracotta;
+- primary copy, save-image, and share actions;
+- an optional advanced section containing Pamudpod, Virama, Traditional,
+  horizontal/stacked layout, background, SVG, and styled-image controls;
 - light/dark appearance selector, initially following the system preference and
   remembering an explicit choice independently of image-export styling;
 - a per-syllable explanation;
@@ -196,6 +204,11 @@ The visible result, SVG, and PNG must derive from the same structured result.
 - A user can reach a result and understand it in under one minute.
 - The generated Baybayin name is the dominant visual element on desktop while
   the input-first mobile order remains easy to use.
+- The result is not shown until the user confirms or edits the pronunciation.
+- The main result actions are Copy, Save image, and Share; writing conventions
+  and image styling remain optional and collapsed by default.
+- Each visible glyph cluster can be selected with pointer or keyboard to show
+  its source sound and explanation.
 - The original name is never silently treated as its pronunciation.
 - Manual phonetic correction updates syllables and output without restarting.
 - Every non-identity adaptation has a visible explanation.
@@ -214,6 +227,9 @@ The visible result, SVG, and PNG must derive from the same structured result.
   the result is described publicly as validated.
 - Unit/property tests and production build pass.
 - Critical result and export flows pass in Chromium, Firefox, and WebKit.
+- Raw HTML contains the product purpose, journey, example, limitations, and
+  sources, with canonical/social metadata, structured data, robots, and a
+  sitemap available without executing the application JavaScript.
 
 ## Deferred decisions
 

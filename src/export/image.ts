@@ -48,6 +48,10 @@ function safeFilename(name: string): string {
   return safe || 'baybayin-name';
 }
 
+export function cardPngFilename(name: string, flow: TextFlow = 'horizontal'): string {
+  return `${safeFilename(name)}-baybayin-card-${flow}.png`;
+}
+
 function conventionLabel(convention: Convention): string {
   if (convention === 'pamudpod') return 'Modern · Pamudpod';
   if (convention === 'virama') return 'Modern · Cross virama';
@@ -261,12 +265,18 @@ export async function downloadCardPng(
   result: TransliterationResult,
   flow: TextFlow = 'horizontal',
 ): Promise<void> {
+  const blob = await createCardPngBlob(originalName, result, flow);
+  downloadBlob(blob, cardPngFilename(originalName, flow));
+}
+
+export async function createCardPngBlob(
+  originalName: string,
+  result: TransliterationResult,
+  flow: TextFlow = 'horizontal',
+): Promise<Blob> {
   const svg = await createCardSvg(originalName, result, flow);
   const png = await svgToPng(svg);
-  downloadBlob(
-    new Blob([Uint8Array.from(png).buffer], { type: 'image/png' }),
-    `${safeFilename(originalName)}-baybayin-card-${flow}.png`,
-  );
+  return new Blob([Uint8Array.from(png).buffer], { type: 'image/png' });
 }
 
 export async function downloadGlyphPng(

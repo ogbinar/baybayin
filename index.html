@@ -5,8 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="See your name in Baybayin based on how you actually pronounce it."
+      content="Discover a suggested Baybayin spelling for your name based on how you pronounce it, then learn, copy, save, or share the result."
     />
+    <link rel="canonical" href="https://pantig.apps.ogbinar.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Pantig" />
+    <meta property="og:title" content="Pantig — Discover your name in Baybayin" />
+    <meta property="og:description" content="Choose how your name sounds, see its suggested Baybayin spelling, and learn how each pantig was written." />
+    <meta property="og:url" content="https://pantig.apps.ogbinar.com/" />
+    <meta property="og:image" content="https://pantig.apps.ogbinar.com/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pantig — Discover your name in Baybayin" />
+    <meta name="twitter:description" content="Your name → how it sounds → suggested Baybayin → why → share." />
+    <meta name="twitter:image" content="https://pantig.apps.ogbinar.com/og-image.png" />
     <meta name="theme-color" content="#f1eadc" />
     <script>
       try {
@@ -16,10 +27,38 @@
           : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       } catch (_) {}
     </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Pantig",
+        "url": "https://pantig.apps.ogbinar.com/",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "description": "A pronunciation-aware learning tool that suggests how a person's name can be represented in Baybayin.",
+        "isAccessibleForFree": true
+      }
+    </script>
     <title>Pantig — Your name in Baybayin</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main>
+        <h1>Discover your name in Baybayin</h1>
+        <p>Pantig starts with how you pronounce your name, breaks it into syllables, and shows a suggested Baybayin spelling.</p>
+        <h2>How it works</h2>
+        <ol>
+          <li>Enter your name.</li>
+          <li>Choose the pronunciation closest to yours.</li>
+          <li>See your Baybayin result.</li>
+          <li>Learn how each pantig was written.</li>
+          <li>Copy, save, or share it.</li>
+        </ol>
+        <p>For example, Michel may be pronounced “Misyel” or “Mikel,” so Pantig asks before showing a result.</p>
+        <p>Pantig is a learning and transliteration aid, not an authority that declares one official spelling.</p>
+        <p>Sources include the National Museum of the Philippines, the Unicode Standard, and the NCCA Philippine History Source Book.</p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -76,3 +76,18 @@
 - [x] Introduce Tailwind CSS v4 theme tokens and migrate the shared shell,
   header, hero, responsive layout, and footer without changing Pantig's visual
   identity.
+
+## Discovery experience
+
+- [x] Replace the always-visible workbench with a three-step name,
+  pronunciation, and result reveal.
+- [x] Keep the name input before the result on mobile and hide the result until
+  pronunciation is confirmed.
+- [x] Add a visible `name → pantig → Baybayin` conversion trail.
+- [x] Make glyph clusters selectable with short explanations.
+- [x] Make Copy, Save image, and Share the primary actions.
+- [x] Add native file/text sharing with a clipboard fallback.
+- [x] Collapse writing conventions, layout, background, SVG, and secondary
+  image controls under optional writing and image options.
+- [x] Add crawlable fallback content, canonical and social metadata,
+  structured data, robots, sitemap, and a social preview image.
