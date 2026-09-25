@@ -4,7 +4,7 @@ Pantig writes names in Baybayin based on how they are said. It suggests one or
 more pronunciations, lets the user correct the bigkas, shows how each pantig is
 written, and exports the result as SVG or PNG.
 
-**Live site:** [baybayin.apps.ogbinar.com](https://baybayin.apps.ogbinar.com/)
+**Live site:** [pantig.apps.ogbinar.com](https://pantig.apps.ogbinar.com/)
 
 The app is deliberately deterministic and runs entirely in the browser. It is
 a learning and transliteration aid, not a source of official spellings.

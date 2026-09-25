@@ -55,7 +55,7 @@
 - [ ] Optional pronunciation/audio research.
 - [ ] Optional backend, persistence, analytics, or AI assistance.
 - [x] Publish the repository publicly on GitHub.
-- [x] Deploy through Dokploy at `baybayin.apps.ogbinar.com`.
+- [x] Deploy through Dokploy at `pantig.apps.ogbinar.com`.
 
 ## Post-MVP presentation options
 
