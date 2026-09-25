@@ -22,7 +22,7 @@ const CONVENTIONS: Array<{ id: Convention; label: string; detail: string }> = [
   { id: 'traditional', label: 'Traditional', detail: 'Ambiguous comparison' },
 ];
 
-const initialCandidateData = getPronunciationCandidates('Angelica');
+const initialCandidateData = getPronunciationCandidates('Michel');
 const initialCandidate = initialCandidateData.candidates[0];
 
 function buildResult(phonetic: string, convention: Convention) {
@@ -37,8 +37,8 @@ function buildResult(phonetic: string, convention: Convention) {
 }
 
 function App() {
-  const [name, setName] = useState('Angelica');
-  const [confirmedName, setConfirmedName] = useState('Angelica');
+  const [name, setName] = useState('Michel');
+  const [confirmedName, setConfirmedName] = useState('Michel');
   const [candidates, setCandidates] = useState<PronunciationCandidate[]>(
     initialCandidateData.candidates,
   );

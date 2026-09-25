@@ -4,6 +4,24 @@ import type { PronunciationCandidate, ValidationResult } from './types';
 type CuratedEntry = Omit<PronunciationCandidate, 'id' | 'source' | 'adaptations'>;
 
 const CURATED_NAMES: Record<string, CuratedEntry[]> = {
+  michel: [
+    {
+      display: 'Misyel',
+      phonetic: 'misyel',
+      label: '“mi-SYEL” pronunciation',
+      confidence: 'medium',
+      recommended: true,
+      notes: ['Uses “sy” as a Baybayin-compatible approximation of the “sh” sound.'],
+    },
+    {
+      display: 'Mikel',
+      phonetic: 'mikel',
+      label: '“MI-kel” alternative',
+      confidence: 'medium',
+      recommended: false,
+      notes: ['Choose this only when the middle consonant is pronounced as a hard “k”.'],
+    },
+  ],
   angelica: [
     {
       display: 'Andiyelika',
@@ -65,4 +83,3 @@ export function getPronunciationCandidates(input: string): {
 
   return { validation, candidates: [candidate] };
 }
-

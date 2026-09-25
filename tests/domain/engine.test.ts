@@ -7,6 +7,16 @@ import {
 } from '../../src/domain';
 
 describe('pronunciation candidates', () => {
+  it('offers pronunciation-aware Michel interpretations', () => {
+    const result = getPronunciationCandidates('Michel');
+    expect(result.validation.ok).toBe(true);
+    expect(result.candidates.map((candidate) => candidate.phonetic)).toEqual([
+      'misyel',
+      'mikel',
+    ]);
+    expect(result.candidates[0].recommended).toBe(true);
+  });
+
   it('offers the two frozen Angelica interpretations', () => {
     const result = getPronunciationCandidates('Angelica');
     expect(result.validation.ok).toBe(true);
@@ -86,4 +96,3 @@ describe('Baybayin rendering', () => {
     expect(transliterate('ko').unicode).toBe(transliterate('ku').unicode);
   });
 });
-

@@ -4,10 +4,10 @@ import { describe, expect, it } from 'vitest';
 import App from '../../src/App';
 
 describe('Pantig app', () => {
-  it('starts with the pronunciation-aware Angelica example', () => {
+  it('starts with the pronunciation-aware Michel example', () => {
     render(<App />);
-    expect(screen.getByTestId('baybayin-result')).toHaveTextContent('ᜀᜈ᜕ᜇᜒᜌᜒᜎᜒᜃ');
-    expect(screen.getByLabelText('Phonetic spelling')).toHaveValue('andiyelika');
+    expect(screen.getByTestId('baybayin-result')).toHaveTextContent('ᜋᜒᜐ᜕ᜌᜒᜎ᜕');
+    expect(screen.getByLabelText('Phonetic spelling')).toHaveValue('misyel');
   });
 
   it('updates immediately when the phonetic spelling changes', () => {

@@ -11,8 +11,8 @@ an informed transliteration aid, not a universal spelling authority.
 
 ## Current MVP
 
-- Curated alternatives for ambiguous names such as `Angelica` → `Andiyelika`
-  or `Anghelika`
+- Curated alternatives for ambiguous names such as `Michel` → `Misyel` or
+  `Mikel`
 - Editable phonetic spelling and visible syllable analysis
 - Modern pamudpod, cross-virama, and traditional-style comparison modes
 - Per-syllable Unicode traceability

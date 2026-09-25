@@ -1,18 +1,18 @@
 import { expect, test } from '@playwright/test';
 
-test('shows and explains the default Angelica result', async ({ page }) => {
+test('shows and explains the default Michel result', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Your name, written by sound.' })).toBeVisible();
-  await expect(page.getByTestId('baybayin-result')).toHaveText('ᜀᜈ᜕ᜇᜒᜌᜒᜎᜒᜃ');
-  await expect(page.getByLabel('Detected syllables')).toContainText('an');
+  await expect(page.getByTestId('baybayin-result')).toHaveText('ᜋᜒᜐ᜕ᜌᜒᜎ᜕');
+  await expect(page.getByLabel('Detected syllables')).toContainText('mi');
   await expect(page.getByRole('heading', { name: 'How this form was built' })).toBeVisible();
 });
 
-test('lets the user choose the Anghelika interpretation', async ({ page }) => {
+test('lets the user choose the Mikel interpretation', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('radio', { name: /Anghelika/ }).click();
-  await expect(page.getByLabel('Phonetic spelling')).toHaveValue('anghelika');
-  await expect(page.getByTestId('baybayin-result')).toHaveText('ᜀᜅ᜕ᜑᜒᜎᜒᜃ');
+  await page.getByRole('radio', { name: /Mikel/ }).click();
+  await expect(page.getByLabel('Phonetic spelling')).toHaveValue('mikel');
+  await expect(page.getByTestId('baybayin-result')).toHaveText('ᜋᜒᜃᜒᜎ᜕');
 });
 
 test('supports manual pronunciation and convention switching', async ({ page }) => {
@@ -30,16 +30,16 @@ test('generates portable SVG and PNG downloads', async ({ page }) => {
 
   const svgDownload = page.waitForEvent('download');
   await page.getByRole('button', { name: 'SVG' }).click();
-  await expect((await svgDownload).suggestedFilename()).toBe('angelica-baybayin-card-horizontal.svg');
+  await expect((await svgDownload).suggestedFilename()).toBe('michel-baybayin-card-horizontal.svg');
 
   const pngDownload = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download card' }).click();
-  await expect((await pngDownload).suggestedFilename()).toBe('angelica-baybayin-card-horizontal.png');
+  await expect((await pngDownload).suggestedFilename()).toBe('michel-baybayin-card-horizontal.png');
 
   const imageDownload = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download image' }).click();
   await expect((await imageDownload).suggestedFilename()).toBe(
-    'angelica-baybayin-horizontal-transparent.png',
+    'michel-baybayin-horizontal-transparent.png',
   );
 });
 
@@ -53,7 +53,7 @@ test('exports the selected vertical flow and background', async ({ page }) => {
   const imageDownload = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download image' }).click();
   await expect((await imageDownload).suggestedFilename()).toBe(
-    'angelica-baybayin-vertical-terracotta.png',
+    'michel-baybayin-vertical-terracotta.png',
   );
 });
 

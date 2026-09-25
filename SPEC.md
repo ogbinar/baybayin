@@ -126,10 +126,10 @@ recomputes it immediately.
 
 ## Curated candidate behavior
 
-The curated layer may provide multiple known possibilities. The initial
-required example is:
+The curated layer may provide multiple known possibilities. The landing
+example is:
 
-- `Angelica` → `Andiyelika` or `Anghelika`
+- `Michel` → `Misyel` or `Mikel`
 
 The UI recommends one candidate but never hides the alternatives. Generic
 names receive a conservative “as written/normalized” candidate plus a
