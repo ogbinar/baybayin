@@ -1,0 +1,36 @@
+{
+  "name": "pantig",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test --project=chromium --project=firefox",
+    "test:e2e:webkit": "playwright test --project=webkit",
+    "typecheck": "tsc -b --pretty false"
+  },
+  "dependencies": {
+    "@resvg/resvg-wasm": "^2.6.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "satori": "^0.32.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "fast-check": "^4.10.2",
+    "jsdom": "^29.1.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1",
+    "vitest": "^4.1.11"
+  }
+}
