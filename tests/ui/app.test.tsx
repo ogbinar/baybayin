@@ -49,4 +49,12 @@ describe('Pantig app', () => {
     expect(screen.getByRole('link', { name: 'Unicode Standard' })).toBeVisible();
     expect(screen.getByRole('link', { name: 'NCCA Philippine History Source Book' })).toBeVisible();
   });
+
+  it('links to the public source code', () => {
+    render(<App />);
+    expect(screen.getByRole('link', { name: 'View the code on GitHub' })).toHaveAttribute(
+      'href',
+      'https://github.com/ogbinar/baybayin',
+    );
+  });
 });

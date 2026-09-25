@@ -949,6 +949,16 @@ footer span:first-child {
   text-transform: uppercase;
 }
 
+footer a {
+  color: inherit;
+  font-weight: 700;
+  text-underline-offset: 4px;
+}
+
+footer a:hover {
+  color: var(--ink);
+}
+
 :root[data-theme='dark'] .hero-copy,
 :root[data-theme='dark'] .method-copy {
   color: #bcc6c0;

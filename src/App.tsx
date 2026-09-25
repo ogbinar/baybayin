@@ -480,7 +480,12 @@ function App() {
 
       <footer>
         <span>Pantig</span>
-        <span>A guide to writing names by sound.</span>
+        <span>
+          A guide to writing names by sound.{' '}
+          <a href="https://github.com/ogbinar/baybayin" target="_blank" rel="noreferrer">
+            View the code on GitHub
+          </a>
+        </span>
       </footer>
     </div>
   );
