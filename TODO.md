@@ -54,4 +54,5 @@
 - [ ] Expert review of the golden corpus and explanatory language.
 - [ ] Optional pronunciation/audio research.
 - [ ] Optional backend, persistence, analytics, or AI assistance.
-- [ ] GitHub publication and Dokploy deployment after explicit authorization.
+- [x] Publish the repository publicly on GitHub.
+- [ ] Deploy through Dokploy after explicit authorization.
