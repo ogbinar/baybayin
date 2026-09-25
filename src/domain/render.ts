@@ -51,7 +51,7 @@ function renderSyllable(syllable: Syllable, convention: Convention): SyllableRen
         syllable.nucleus,
         unicode,
         'independent-vowel',
-        `The vowel “${syllable.nucleus}” begins the syllable, so it uses an independent vowel sign.`,
+        `The pantig begins with “${syllable.nucleus}”, so it uses an independent vowel character.`,
       ),
     );
   } else {
@@ -67,8 +67,8 @@ function renderSyllable(syllable: Syllable, convention: Convention): SyllableRen
           unicode,
           'cluster',
           modern
-            ? `“${sound}” is part of an onset cluster, so its inherent vowel is cancelled.`
-            : `Traditional-style writing leaves the inherent “a” on clustered “${sound}”.`,
+            ? `“${sound}” begins a consonant cluster, so the mark removes its built-in “a” sound.`
+            : `Traditional-style writing keeps the built-in “a” sound on clustered “${sound}”.`,
         ),
       );
     }
@@ -81,8 +81,8 @@ function renderSyllable(syllable: Syllable, convention: Convention): SyllableRen
         unicode,
         'onset',
         syllable.nucleus === 'a'
-          ? `“${vowelOnset}” carries its inherent “a” vowel.`
-          : `“${vowelOnset}” receives the shared ${syllable.nucleus === 'e' || syllable.nucleus === 'i' ? 'e/i' : 'o/u'} vowel mark.`,
+          ? `“${vowelOnset}” keeps its built-in “a” sound.`
+          : `“${vowelOnset}” takes the shared ${syllable.nucleus === 'e' || syllable.nucleus === 'i' ? 'e/i' : 'o/u'} vowel mark.`,
       ),
     );
   }
@@ -96,7 +96,7 @@ function renderSyllable(syllable: Syllable, convention: Convention): SyllableRen
           sound,
           unicode,
           'coda',
-          `Final “${sound}” uses the ${convention === 'pamudpod' ? 'pamudpod' : 'virama'} to cancel its inherent vowel.`,
+          `Final “${sound}” uses the ${convention === 'pamudpod' ? 'pamudpod' : 'virama'} to remove its built-in “a” sound.`,
         ),
       );
     }
@@ -106,7 +106,7 @@ function renderSyllable(syllable: Syllable, convention: Convention): SyllableRen
   const explanation =
     convention === 'traditional' && syllable.coda.length
       ? `${syllable.source}: final ${syllable.coda.join('')} is omitted in this traditional-style comparison.`
-      : `${syllable.source}: ${tokens.map((item) => item.codePoints.join(' + ')).join(', ')}`;
+      : tokens.map((item) => item.explanation).join(' ');
 
   return { syllable, unicode, tokens, explanation };
 }
@@ -130,7 +130,7 @@ export function renderAnalysis(
   const renderings = analysis.syllables.map((syllable) => renderingBySyllable.get(syllable.index)!);
   const warnings: string[] = [];
   if (analysis.adaptations.length) {
-    warnings.push('Some sounds were adapted. Confirm the phonetic spelling before using the result.');
+    warnings.push('Some sounds were changed to ones Pantig can write. Check the bigkas before using this result.');
   }
   if (convention === 'traditional') {
     warnings.push('Traditional-style writing can omit final consonants and make clusters ambiguous.');
@@ -154,4 +154,3 @@ export function transliterate(
 ): TransliterationResult {
   return renderAnalysis(analyzePhonetic(phonetic), convention);
 }
-

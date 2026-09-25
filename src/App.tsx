@@ -18,9 +18,9 @@ import {
 import './styles.css';
 
 const CONVENTIONS: Array<{ id: Convention; label: string; detail: string }> = [
-  { id: 'pamudpod', label: 'Pamudpod', detail: 'Modern default' },
-  { id: 'virama', label: 'Virama', detail: 'Cross-shaped killer' },
-  { id: 'traditional', label: 'Traditional', detail: 'Ambiguous comparison' },
+  { id: 'pamudpod', label: 'Pamudpod', detail: 'Modern · final sounds shown' },
+  { id: 'virama', label: 'Virama', detail: 'Modern · cross mark' },
+  { id: 'traditional', label: 'Traditional-style', detail: 'May omit final sounds' },
 ];
 
 const initialCandidateData = getPronunciationCandidates('Michel');
@@ -44,6 +44,12 @@ function buildResult(phonetic: string, convention: Convention) {
       error: error instanceof Error ? error.message : 'The phonetic spelling could not be processed.',
     };
   }
+}
+
+function showResult() {
+  window.requestAnimationFrame(() => {
+    document.getElementById('result')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+  });
 }
 
 function App() {
@@ -79,6 +85,7 @@ function App() {
       result: buildResult(phonetic, item.id).result,
     })).filter((item): item is typeof item & { result: TransliterationResult } => Boolean(item.result));
   }, [computed.result, phonetic]);
+  const activeCandidate = candidates.find((candidate) => candidate.id === selectedCandidate);
 
   const handleGenerate = (event: React.FormEvent) => {
     event.preventDefault();
@@ -97,12 +104,14 @@ function App() {
     setTextFlow('horizontal');
     setImageBackground('transparent');
     setCopyState('idle');
+    showResult();
   };
 
   const chooseCandidate = (candidate: PronunciationCandidate) => {
     setSelectedCandidate(candidate.id);
     setPhonetic(candidate.phonetic);
     setCopyState('idle');
+    showResult();
   };
 
   const copyResult = async () => {
@@ -154,12 +163,15 @@ function App() {
 
       <main id="top">
         <section className="hero" aria-labelledby="hero-title">
-          <p className="eyebrow">Pronunciation-aware Baybayin</p>
+          <p className="eyebrow">Baybayin for your name</p>
           <h1 id="hero-title">Your name, written by sound.</h1>
-          <p className="hero-copy">
-            Baybayin follows syllables, not English spelling. Choose how your name sounds,
-            inspect every step, then save the result.
-          </p>
+          <div className="hero-support">
+            <p className="hero-copy">
+              Baybayin follows how a name is said, not how it is spelled. Choose the closest
+              bigkas, check each pantig, and save the result.
+            </p>
+            <a className="hero-link" href="#name">Try your name ↓</a>
+          </div>
         </section>
 
         <section className="workbench" aria-label="Baybayin name transliterator">
@@ -168,7 +180,7 @@ function App() {
               <span>01</span>
               <div>
                 <h2>Enter a name</h2>
-                <p>We will suggest a Filipino-friendly pronunciation.</p>
+                <p>Start with the name as you normally write it.</p>
               </div>
             </div>
 
@@ -183,7 +195,7 @@ function App() {
                   autoComplete="name"
                   aria-describedby={inputError ? 'name-error' : undefined}
                 />
-                <button type="submit">Find its form</button>
+                <button type="submit">Show pronunciations</button>
               </div>
               {inputError && <p className="field-error" id="name-error">{inputError}</p>}
             </form>
@@ -192,8 +204,8 @@ function App() {
               <div className="step-heading compact">
                 <span>02</span>
                 <div>
-                  <h2>Choose the sound</h2>
-                  <p>Your pronunciation is the source of truth.</p>
+                  <h2>How do you say it?</h2>
+                  <p>Choose the closest pronunciation. You can edit it below.</p>
                 </div>
               </div>
 
@@ -211,13 +223,13 @@ function App() {
                       <strong>{candidate.display}</strong>
                       <small>{candidate.label}</small>
                     </span>
-                    {candidate.recommended && <em>Recommended</em>}
+                    {candidate.recommended && <em>Suggested</em>}
                   </button>
                 ))}
               </div>
 
               <label className="phonetic-label" htmlFor="phonetic">
-                Phonetic spelling
+                Bigkas — how it sounds
                 <span>Edit this until it matches how you say your name.</span>
               </label>
               <input
@@ -232,6 +244,10 @@ function App() {
                 }}
                 spellCheck={false}
               />
+
+              {activeCandidate?.notes[0] && (
+                <p className="candidate-guidance">{activeCandidate.notes[0]}</p>
+              )}
 
               {computed.result && (
                 <div className="syllable-row" aria-label="Detected syllables">
@@ -250,10 +266,10 @@ function App() {
             </div>
           </div>
 
-          <div className="result-panel" aria-live="polite">
+          <div className="result-panel" id="result" aria-live="polite">
             <div className="result-topline">
-              <span>03 · Your Baybayin form</span>
-              <span className="privacy-note">Runs on your device</span>
+              <span>03 · Suggested Baybayin spelling</span>
+              <span className="privacy-note">Private · nothing uploaded</span>
             </div>
 
             {computed.result ? (
@@ -274,6 +290,15 @@ function App() {
                 <div className="result-phonetic">
                   {computed.result.analysis.syllables.map((syllable) => syllable.source).join(' · ')}
                 </div>
+                <p className="result-guidance">
+                  Based on the bigkas you chose. Other spellings may also be valid.
+                </p>
+
+                {computed.result.warnings.length > 0 && (
+                  <ul className="result-warnings">
+                    {computed.result.warnings.map((warning) => <li key={warning}>{warning}</li>)}
+                  </ul>
+                )}
 
                 <div className="convention-picker" role="radiogroup" aria-label="Writing convention">
                   {CONVENTIONS.map((item) => (
@@ -353,6 +378,10 @@ function App() {
                     })}>SVG</button>
                   </div>
                 </div>
+                <p className="download-note">
+                  For a tattoo or permanent design, ask a Baybayin teacher or experienced
+                  practitioner to review the bigkas, convention, and spelling.
+                </p>
                 {exportState && <p className="export-status" role="status">{exportState}</p>}
               </>
             ) : (
@@ -364,9 +393,9 @@ function App() {
         {computed.result && (
           <section className="explanation-section" aria-labelledby="explanation-title">
             <div className="section-intro">
-              <p className="eyebrow">Nothing hidden</p>
-              <h2 id="explanation-title">How this form was built</h2>
-              <p>Every syllable stays connected to the characters it produced.</p>
+              <p className="eyebrow">See the breakdown</p>
+              <h2 id="explanation-title">How each pantig was written</h2>
+              <p>Each pantig is shown beside the Baybayin characters used for it.</p>
             </div>
 
             <div className="mapping-grid">
@@ -384,7 +413,7 @@ function App() {
 
             {computed.result.analysis.adaptations.length > 0 && (
               <div className="adaptation-note">
-                <strong>Sound adaptations</strong>
+                <strong>Sound changes</strong>
                 <ul>
                   {computed.result.analysis.adaptations.map((adaptation) => (
                     <li key={`${adaptation.ruleId}-${adaptation.after}`}>{adaptation.explanation}</li>
@@ -398,8 +427,8 @@ function App() {
         {comparisons.length > 0 && (
           <section className="comparison-section" aria-labelledby="comparison-title">
             <div className="section-intro">
-              <p className="eyebrow">Compare conventions</p>
-              <h2 id="comparison-title">One sound, different writing choices</h2>
+              <p className="eyebrow">Compare the options</p>
+              <h2 id="comparison-title">Other ways to write the same sound</h2>
             </div>
             <div className="comparison-grid">
               {comparisons.map((item) => (
@@ -414,16 +443,16 @@ function App() {
         )}
 
         <section className="method-section" id="method" aria-labelledby="method-title">
-          <p className="eyebrow">Our method</p>
-          <h2 id="method-title">A careful suggestion, not a declaration.</h2>
+          <p className="eyebrow">A quick note</p>
+          <h2 id="method-title">This is a suggested spelling, not the only valid one.</h2>
           <div className="method-copy">
             <p>
-              Baybayin represents syllables and does not preserve every sound found in modern names.
-              Pantig asks for pronunciation, shows its adaptations, and lets you choose among documented conventions.
+              Baybayin is written by syllable and does not preserve every sound found in modern
+              names. Pantig starts with your chosen bigkas and shows where sounds were changed.
             </p>
             <p>
-              Have a knowledgeable reader review the result before using it for a tattoo, legal mark,
-              ceremony, or permanent identity design.
+              Pantig is a learning and transliteration aid. Its current rules and examples have not
+              yet received expert linguistic review.
             </p>
           </div>
         </section>
@@ -431,7 +460,7 @@ function App() {
 
       <footer>
         <span>Pantig</span>
-        <span>Built for informed, personal choices.</span>
+        <span>A guide to writing names by sound.</span>
       </footer>
     </div>
   );

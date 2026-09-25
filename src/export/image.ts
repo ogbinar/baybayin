@@ -183,7 +183,7 @@ export async function createCardSvg(
         'div',
         { style: { display: 'flex', flexDirection: 'column', maxWidth: 670 } },
         createElement('div', { style: { fontSize: 22, color: '#173d38' } }, 'Based on the pronunciation you selected.'),
-        createElement('div', { style: { fontSize: 17, color: '#745746', marginTop: 8 } }, 'An informed transliteration, not a universal spelling.'),
+        createElement('div', { style: { fontSize: 17, color: '#745746', marginTop: 8 } }, 'Suggested spelling. Ask an experienced reader to check it before permanent use.'),
       ),
       createElement('div', { style: { width: 88, height: 8, borderRadius: 8, background: '#b96346' } }),
     ),

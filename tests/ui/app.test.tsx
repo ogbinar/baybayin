@@ -21,7 +21,7 @@ describe('Pantig app', () => {
   it('shows an actionable validation error', () => {
     render(<App />);
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: '123' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Find its form' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Show pronunciations' }));
     expect(screen.getByText(/Use Latin letters/)).toBeVisible();
   });
 

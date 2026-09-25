@@ -5,7 +5,8 @@ test('shows and explains the default Michel result', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Your name, written by sound.' })).toBeVisible();
   await expect(page.getByTestId('baybayin-result')).toHaveText('ᜋᜒᜐ᜕ᜌᜒᜎ᜕');
   await expect(page.getByLabel('Detected syllables')).toContainText('mi');
-  await expect(page.getByRole('heading', { name: 'How this form was built' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'How each pantig was written' })).toBeVisible();
+  await expect(page.getByText('Based on the bigkas you chose. Other spellings may also be valid.')).toBeVisible();
 });
 
 test('lets the user choose the Mikel interpretation', async ({ page }) => {
@@ -77,4 +78,7 @@ test('stays within the mobile viewport', async ({ page }) => {
   }));
   expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
   await expect(page.getByTestId('baybayin-result')).toBeVisible();
+  const resultTop = await page.locator('.result-panel').evaluate((element) => element.getBoundingClientRect().top);
+  const controlsTop = await page.locator('.control-panel').evaluate((element) => element.getBoundingClientRect().top);
+  expect(resultTop).toBeLessThan(controlsTop);
 });

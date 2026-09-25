@@ -11,7 +11,7 @@ const CURATED_NAMES: Record<string, CuratedEntry[]> = {
       label: '“mi-SYEL” pronunciation',
       confidence: 'medium',
       recommended: true,
-      notes: ['Uses “sy” as a Baybayin-compatible approximation of the “sh” sound.'],
+      notes: ['Uses “sy” as the nearest supported sound for “sh”.'],
     },
     {
       display: 'Mikel',
@@ -19,25 +19,25 @@ const CURATED_NAMES: Record<string, CuratedEntry[]> = {
       label: '“MI-kel” alternative',
       confidence: 'medium',
       recommended: false,
-      notes: ['Choose this only when the middle consonant is pronounced as a hard “k”.'],
+      notes: ['Choose this if you pronounce the middle sound as a hard “k”.'],
     },
   ],
   angelica: [
     {
       display: 'Andiyelika',
       phonetic: 'andiyelika',
-      label: 'Sound-faithful Filipino form',
+      label: '“an-di-ye-LI-ka” pronunciation',
       confidence: 'high',
       recommended: true,
-      notes: ['Expands the English “j” sound into explicit Filipino syllables.'],
+      notes: ['Writes the “j” sound as the supported sequence “diy”.'],
     },
     {
       display: 'Anghelika',
       phonetic: 'anghelika',
-      label: 'Localized alternative',
+      label: '“ang-he-LI-ka” alternative',
       confidence: 'medium',
       recommended: false,
-      notes: ['Uses an “ang-he” opening and therefore represents a different pronunciation.'],
+      notes: ['Choose this only if your name begins with an “ang-he” sound.'],
     },
   ],
 };
@@ -71,13 +71,13 @@ export function getPronunciationCandidates(input: string): {
     id: `rule-${adapted.value}`,
     display: titleCaseName(adapted.value),
     phonetic: adapted.value,
-    label: changed ? 'Filipino sound approximation' : 'As written',
+    label: changed ? 'Suggested sound match' : 'As written',
     source: 'rule',
     confidence: changed ? 'medium' : 'high',
     recommended: true,
     notes: changed
       ? ['Check this suggestion and edit it if it does not match how you say your name.']
-      : ['The spelling already uses sounds supported by the current engine.'],
+      : ['This spelling already uses sounds Pantig can write directly.'],
     adaptations: adapted.adaptations,
   };
 

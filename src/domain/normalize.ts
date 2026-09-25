@@ -14,79 +14,79 @@ const REPLACEMENT_RULES: ReplacementRule[] = [
     id: 'qu-to-kw',
     pattern: /qu/g,
     replacement: 'kw',
-    explanation: '“qu” was approximated as the Filipino sound “kw”.',
+    explanation: '“qu” was written as the sound “kw”.',
   },
   {
     id: 'ph-to-p',
     pattern: /ph/g,
     replacement: 'p',
-    explanation: '“ph” was approximated with the Baybayin-compatible “p” sound.',
+    explanation: '“ph” was matched to the supported “p” sound.',
   },
   {
     id: 'ch-to-ts',
     pattern: /ch/g,
     replacement: 'ts',
-    explanation: '“ch” was approximated as “ts”.',
+    explanation: '“ch” was matched to the sound “ts”.',
   },
   {
     id: 'sh-to-siy',
     pattern: /sh/g,
     replacement: 'siy',
-    explanation: '“sh” was expanded to the Filipino-style sequence “siy”.',
+    explanation: '“sh” was matched to the supported sequence “siy”.',
   },
   {
     id: 'soft-g-to-diy',
     pattern: /g(?=[eiy])/g,
     replacement: 'diy',
-    explanation: 'Soft “g” was approximated as the Filipino-style sequence “diy”.',
+    explanation: 'Soft “g” was matched to the supported sequence “diy”.',
   },
   {
     id: 'j-to-diy',
     pattern: /j/g,
     replacement: 'diy',
-    explanation: '“j” was approximated as the Filipino-style sequence “diy”.',
+    explanation: '“j” was matched to the supported sequence “diy”.',
   },
   {
     id: 'soft-c-to-s',
     pattern: /c(?=[eiy])/g,
     replacement: 's',
-    explanation: 'Soft “c” was approximated as “s”.',
+    explanation: 'Soft “c” was matched to the sound “s”.',
   },
   {
     id: 'hard-c-to-k',
     pattern: /c/g,
     replacement: 'k',
-    explanation: 'Hard “c” was approximated as “k”.',
+    explanation: 'Hard “c” was matched to the sound “k”.',
   },
   {
     id: 'f-to-p',
     pattern: /f/g,
     replacement: 'p',
-    explanation: '“f” was approximated with the traditional “p” sound.',
+    explanation: '“f” was matched to the closest supported sound, “p”.',
   },
   {
     id: 'v-to-b',
     pattern: /v/g,
     replacement: 'b',
-    explanation: '“v” was approximated with the traditional “b” sound.',
+    explanation: '“v” was matched to the closest supported sound, “b”.',
   },
   {
     id: 'z-to-s',
     pattern: /z/g,
     replacement: 's',
-    explanation: '“z” was approximated with the traditional “s” sound.',
+    explanation: '“z” was matched to the closest supported sound, “s”.',
   },
   {
     id: 'x-to-ks',
     pattern: /x/g,
     replacement: 'ks',
-    explanation: '“x” was expanded to the consonant sequence “ks”.',
+    explanation: '“x” was written as the sound sequence “ks”.',
   },
   {
     id: 'q-to-k',
     pattern: /q/g,
     replacement: 'k',
-    explanation: '“q” was approximated as “k”.',
+    explanation: '“q” was matched to the sound “k”.',
   },
 ];
 
@@ -120,7 +120,7 @@ export function adaptToFilipino(input: string): {
       ruleId: 'normalize-apostrophe',
       before: value,
       after: apostropheNormalized,
-      explanation: 'The apostrophe was normalized for consistent processing.',
+      explanation: 'The apostrophe style was simplified before writing the name.',
     });
     value = apostropheNormalized;
   }
@@ -131,7 +131,7 @@ export function adaptToFilipino(input: string): {
       ruleId: 'enye-to-ny',
       before: value,
       after: enyeNormalized,
-      explanation: '“ñ” was represented as the Filipino sequence “ny”.',
+      explanation: '“ñ” was written as the supported sequence “ny”.',
     });
     value = enyeNormalized;
   }
@@ -142,7 +142,7 @@ export function adaptToFilipino(input: string): {
       ruleId: 'normalize-diacritics',
       before: value,
       after: accentsNormalized,
-      explanation: 'Latin accent marks were normalized for phonetic processing.',
+      explanation: 'Accent marks were removed before matching the sounds.',
     });
     value = accentsNormalized;
   }
@@ -169,4 +169,3 @@ export function titleCaseName(value: string): string {
     `${separator}${letter.toUpperCase()}`,
   );
 }
-

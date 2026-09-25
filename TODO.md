@@ -66,3 +66,7 @@
 - [x] Add responsive preview and cross-browser export tests.
 - [x] Add system-aware, persistent light and dark appearance themes.
 - [x] Keep interface themes independent from image-export backgrounds.
+- [x] Make the generated Baybayin name the primary visual hero on desktop.
+- [x] Rewrite the interface in a warm, practical, English-first Filipino voice.
+- [x] Introduce `bigkas` and `pantig` in context without forced Taglish.
+- [x] Put spelling uncertainty and permanent-use guidance beside the result.

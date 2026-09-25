@@ -139,7 +139,7 @@ Filipino-natural candidate when rules produce a distinct form.
 
 The result screen contains:
 
-- the large Baybayin rendering;
+- the large Baybayin rendering as the page's primary visual focus;
 - original name and confirmed pronunciation;
 - visible syllable chips;
 - convention selector: Pamudpod, Virama, Traditional;
@@ -152,6 +152,11 @@ The result screen contains:
 - copy Unicode action;
 - download card, transparent PNG, and SVG actions;
 - a compact cultural/methodology disclaimer.
+
+Functional copy uses plain, English-first language with `bigkas` and `pantig`
+introduced in context. It describes concrete actions and consequences, avoids
+claims of one correct or official spelling, and places limitations beside the
+choice or download they affect.
 
 ## Export contract
 
@@ -189,6 +194,8 @@ The visible result, SVG, and PNG must derive from the same structured result.
 ## Acceptance criteria
 
 - A user can reach a result and understand it in under one minute.
+- The generated Baybayin name is the dominant visual element on desktop while
+  the input-first mobile order remains easy to use.
 - The original name is never silently treated as its pronunciation.
 - Manual phonetic correction updates syllables and output without restarting.
 - Every non-identity adaptation has a visible explanation.
