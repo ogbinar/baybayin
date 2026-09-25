@@ -1,8 +1,8 @@
 # Pantig
 
-Pantig writes names in Baybayin based on how they are said. It suggests one or
-more pronunciations, lets the user correct the bigkas, shows how each pantig is
-written, and exports the result as SVG or PNG.
+Pantig writes names in Baybayin based on how they are said. It immediately
+shows a best-effort suggestion, makes its pronunciation guess visible and
+editable, explains each pantig, and exports the result as SVG or PNG.
 
 **Live site:** [pantig.apps.ogbinar.com](https://pantig.apps.ogbinar.com/)
 
@@ -11,14 +11,14 @@ a learning and transliteration aid, not a source of official spellings.
 
 ## Current MVP
 
-- Progressive discovery flow: name → pronunciation → Baybayin reveal
+- Direct discovery flow: name → immediate suggested Baybayin result
 - Curated alternatives for ambiguous names such as `Michel` → `Misyel` or
   `Mikel`
-- Editable phonetic spelling and visible syllable analysis
+- Inline pronunciation correction and visible syllable analysis
 - Modern pamudpod, cross-virama, and traditional-style comparison modes
 - Per-syllable Unicode traceability
 - Copyable Unicode output
-- Clickable Baybayin symbols with short, traceable explanations
+- Progressively disclosed syllable and clickable-character explanations
 - Primary copy, save-image, and native share actions with a clipboard fallback
 - Horizontal presentation and a stacked design layout
 - Transparent, paper, forest, and terracotta image backgrounds
@@ -76,6 +76,7 @@ variables, API keys, database, or backend are required.
 - `VISION.md` — product direction and principles
 - `TECHNICAL_RESEARCH.md` — evaluated libraries and implementation research
 - `SPEC.md` — frozen MVP contract
+- `PLAN.md` — direct-to-result UX rationale, implementation, and verification plan
 - `TODO.md` — implementation and verification status
 
 ## Sources

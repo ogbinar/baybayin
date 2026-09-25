@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   getPronunciationCandidates,
+  titleCaseName,
   transliterate,
   type Convention,
   type GlyphToken,
@@ -17,19 +18,16 @@ import {
 } from './presentation';
 import './styles.css';
 
-type JourneyStage = 'name' | 'pronunciation' | 'result';
+type ViewState = 'name' | 'result';
 type InteractiveGlyph =
   | { kind: 'token'; id: string; token: GlyphToken }
   | { kind: 'separator'; id: string; unicode: string };
 
 const CONVENTIONS: Array<{ id: Convention; label: string; detail: string }> = [
-  { id: 'pamudpod', label: 'Pamudpod', detail: 'Modern · final sounds shown' },
-  { id: 'virama', label: 'Virama', detail: 'Modern · cross mark' },
-  { id: 'traditional', label: 'Traditional-style', detail: 'May omit final sounds' },
+  { id: 'pamudpod', label: 'Modern · Pamudpod', detail: 'Final sounds are shown' },
+  { id: 'virama', label: 'Modern · Virama', detail: 'Uses the cross-shaped mark' },
+  { id: 'traditional', label: 'Traditional-style', detail: 'May leave final sounds unwritten' },
 ];
-
-const initialCandidateData = getPronunciationCandidates('Michel');
-const initialCandidate = initialCandidateData.candidates[0];
 
 function initialColorTheme(): ColorTheme {
   const stored = window.localStorage.getItem('pantig-theme');
@@ -41,12 +39,13 @@ function initialColorTheme(): ColorTheme {
 }
 
 function buildResult(phonetic: string, convention: Convention) {
+  if (!phonetic.trim()) return { result: null, error: '' };
   try {
     return { result: transliterate(phonetic, convention), error: '' };
   } catch (error) {
     return {
       result: null,
-      error: error instanceof Error ? error.message : 'The pronunciation could not be processed.',
+      error: error instanceof Error ? error.message : 'Pantig could not read that pronunciation.',
     };
   }
 }
@@ -80,12 +79,15 @@ function syllableLine(result: TransliterationResult): string {
 
 function App() {
   const [colorTheme, setColorTheme] = useState<ColorTheme>(initialColorTheme);
-  const [stage, setStage] = useState<JourneyStage>('name');
-  const [name, setName] = useState('Michel');
-  const [confirmedName, setConfirmedName] = useState('Michel');
-  const [candidates, setCandidates] = useState<PronunciationCandidate[]>(initialCandidateData.candidates);
-  const [selectedCandidate, setSelectedCandidate] = useState(initialCandidate.id);
-  const [phonetic, setPhonetic] = useState(initialCandidate.phonetic);
+  const [view, setView] = useState<ViewState>('name');
+  const [name, setName] = useState('');
+  const [confirmedName, setConfirmedName] = useState('');
+  const [candidates, setCandidates] = useState<PronunciationCandidate[]>([]);
+  const [selectedCandidate, setSelectedCandidate] = useState('');
+  const [phonetic, setPhonetic] = useState('');
+  const [draftPhonetic, setDraftPhonetic] = useState('');
+  const [pronunciationOpen, setPronunciationOpen] = useState(false);
+  const [manualError, setManualError] = useState('');
   const [convention, setConvention] = useState<Convention>('pamudpod');
   const [textFlow, setTextFlow] = useState<TextFlow>('horizontal');
   const [imageBackground, setImageBackground] = useState<ImageBackground>('transparent');
@@ -94,12 +96,15 @@ function App() {
   const [exportState, setExportState] = useState('');
   const [shareState, setShareState] = useState('');
   const [selectedGlyphId, setSelectedGlyphId] = useState<string | null>(null);
+  const [announcement, setAnnouncement] = useState('');
+  const resultHeadingRef = useRef<HTMLHeadingElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     document.documentElement.dataset.theme = colorTheme;
     window.localStorage.setItem('pantig-theme', colorTheme);
     document.querySelector('meta[name="theme-color"]')?.setAttribute(
-      'content', colorTheme === 'dark' ? '#101918' : '#f1eadc',
+      'content', colorTheme === 'dark' ? '#101918' : '#f4efe5',
     );
   }, [colorTheme]);
 
@@ -110,12 +115,9 @@ function App() {
       glyph.kind === 'token' && glyph.id === selectedGlyphId,
   );
   const activeCandidate = candidates.find((candidate) => candidate.id === selectedCandidate);
-
-  const scrollToJourney = () => {
-    window.requestAnimationFrame(() => {
-      document.getElementById('journey')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
-    });
-  };
+  const pronunciationDisplay = activeCandidate?.phonetic === phonetic
+    ? activeCandidate.display
+    : titleCaseName(phonetic);
 
   const resetResultOptions = () => {
     setConvention('pamudpod');
@@ -125,6 +127,13 @@ function App() {
     setExportState('');
     setShareState('');
     setSelectedGlyphId(null);
+  };
+
+  const focusResult = () => {
+    window.requestAnimationFrame(() => {
+      resultHeadingRef.current?.focus({ preventScroll: true });
+      document.getElementById('result')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+    });
   };
 
   const handleGenerate = (event: React.FormEvent) => {
@@ -140,25 +149,55 @@ function App() {
     setCandidates(data.candidates);
     setSelectedCandidate(recommended.id);
     setPhonetic(recommended.phonetic);
+    setDraftPhonetic(recommended.phonetic);
+    setPronunciationOpen(false);
+    setManualError('');
     resetResultOptions();
-    setStage('pronunciation');
-    scrollToJourney();
+    setView('result');
+    setAnnouncement(`Suggested Baybayin spelling for ${data.validation.value}, read as ${recommended.display}.`);
+    focusResult();
   };
 
-  const revealCandidate = (candidate: PronunciationCandidate) => {
+  const chooseCandidate = (candidate: PronunciationCandidate) => {
     setSelectedCandidate(candidate.id);
     setPhonetic(candidate.phonetic);
-    resetResultOptions();
-    setStage('result');
-    scrollToJourney();
+    setDraftPhonetic(candidate.phonetic);
+    setPronunciationOpen(false);
+    setManualError('');
+    setSelectedGlyphId(null);
+    setCopyState('idle');
+    setExportState('');
+    setShareState('');
+    setAnnouncement(`Pronunciation changed to ${candidate.display}. Baybayin suggestion updated.`);
   };
 
-  const revealEditedPronunciation = () => {
-    if (!buildResult(phonetic, 'pamudpod').result) return;
+  const applyManualPronunciation = (event: React.FormEvent) => {
+    event.preventDefault();
+    const trial = buildResult(draftPhonetic, 'pamudpod');
+    if (!trial.result) {
+      setManualError(trial.error || 'Write the pronunciation using supported sounds.');
+      return;
+    }
+    const normalized = draftPhonetic.trim().toLocaleLowerCase('en');
+    setPhonetic(normalized);
+    setDraftPhonetic(normalized);
     setSelectedCandidate('user');
-    resetResultOptions();
-    setStage('result');
-    scrollToJourney();
+    setPronunciationOpen(false);
+    setManualError('');
+    setSelectedGlyphId(null);
+    setCopyState('idle');
+    setExportState('');
+    setShareState('');
+    setAnnouncement(`Pronunciation changed to ${titleCaseName(normalized)}. Baybayin suggestion updated.`);
+  };
+
+  const tryAnotherName = () => {
+    setView('name');
+    setName('');
+    setInputError('');
+    setPronunciationOpen(false);
+    setAnnouncement('');
+    window.requestAnimationFrame(() => nameInputRef.current?.focus());
   };
 
   const copyResult = async () => {
@@ -184,7 +223,7 @@ function App() {
 
   const shareResult = async () => {
     if (!computed.result) return;
-    const text = `${confirmedName} in Baybayin: ${computed.result.unicode}\nSuggested by Pantig from the pronunciation “${phonetic}”.`;
+    const text = `${confirmedName} in Baybayin: ${computed.result.unicode}\nPantig read the name as “${pronunciationDisplay}”. This is one suggested modern spelling.`;
     try {
       if (!navigator.share) {
         await navigator.clipboard.writeText(`${text}\n${window.location.origin}`);
@@ -207,17 +246,17 @@ function App() {
         return;
       }
       console.error('Could not share the result.', error);
-      setShareState('Could not share this result. Try Save image instead.');
+      setShareState('Could not share this result. Try Save instead.');
     }
   };
 
   return (
-    <div className="site-shell mx-auto w-full max-w-[1480px] px-[42px] max-[980px]:px-6 max-[660px]:px-[14px]">
-      <header className="site-header flex min-h-[90px] items-center justify-between border-b border-line max-[660px]:min-h-[74px]">
-        <a className="brand inline-flex items-center gap-3 text-xl font-[680] tracking-[0.08em] text-ink no-underline uppercase" href="#top" aria-label="Pantig home">
+    <div className="site-shell">
+      <header className="site-header">
+        <a className="brand" href="#top" aria-label="Pantig home">
           <span className="brand-mark">ᜉ</span><span>Pantig</span>
         </a>
-        <div className="header-actions flex items-center gap-[18px] max-[660px]:gap-[9px]">
+        <div className="header-actions">
           <div className="theme-picker" role="radiogroup" aria-label="Color theme">
             {(['light', 'dark'] as const).map((theme) => (
               <button type="button" key={theme} role="radio" aria-checked={colorTheme === theme}
@@ -226,102 +265,144 @@ function App() {
               </button>
             ))}
           </div>
-          <a className="method-link text-brown underline-offset-[5px] max-[660px]:text-[13px]" href="#method">About</a>
+          <a className="method-link" href="#method">About</a>
         </div>
       </header>
 
       <main id="top">
-        {stage !== 'result' && (
-          <section className="hero grid grid-cols-[minmax(0,0.9fr)_minmax(320px,1.1fr)] items-end gap-16 pt-[46px] pb-[34px] max-[660px]:grid-cols-1 max-[660px]:gap-4 max-[660px]:px-1 max-[660px]:pt-[52px] max-[660px]:pb-[38px]" aria-labelledby="hero-title">
-            <p className="eyebrow col-span-full -mb-[46px] max-[660px]:col-span-1 max-[660px]:mb-0">Discover your name in Baybayin</p>
-            <h1 className="mb-0 max-w-[680px] text-[clamp(42px,5.5vw,76px)] leading-[0.98] font-[520] tracking-[-0.055em] max-[660px]:text-[clamp(46px,15vw,68px)]" id="hero-title">Your name, written by sound.</h1>
-            <p className="hero-copy mb-0 max-w-[620px] text-[clamp(18px,2vw,23px)] leading-[1.55] text-[#4d5e59] dark:text-[#bcc6c0] max-[660px]:text-[17px]">
-              Tell us your name, choose how you say it, and see how each pantig becomes Baybayin.
-            </p>
+        <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">{announcement}</div>
+
+        {view === 'name' && (
+          <section className="landing" aria-labelledby="landing-title">
+            <p className="eyebrow">Pantig · Your name in Baybayin</p>
+            <h1 id="landing-title">See your name in Baybayin.</h1>
+            <p className="landing-copy">Pantig writes the sound of your name—not just its English spelling.</p>
+            <form className="landing-form" onSubmit={handleGenerate} noValidate>
+              <label htmlFor="name">Your name</label>
+              <div className="input-row">
+                <input ref={nameInputRef} id="name" value={name} placeholder="Michel"
+                  onChange={(event) => setName(event.target.value)} maxLength={80} autoComplete="name"
+                  autoFocus aria-describedby={inputError ? 'name-error' : 'name-help'} />
+                <button type="submit">Show me</button>
+              </div>
+              <p className="name-help" id="name-help">You can check or change the pronunciation after.</p>
+              {inputError && <p className="field-error" id="name-error">{inputError}</p>}
+            </form>
           </section>
         )}
 
-        <section className={`journey stage-${stage}`} id="journey" aria-label="Discover your name in Baybayin">
-          {stage === 'name' && (
-            <div className="journey-card name-stage">
-              <p className="step-kicker">Step 1 of 3</p>
-              <h2>What’s your name?</h2>
-              <p>Start with the name as you normally write it.</p>
-              <form className="name-form" onSubmit={handleGenerate} noValidate>
-                <label htmlFor="name">Your name</label>
-                <div className="input-row">
-                  <input id="name" value={name} onChange={(event) => setName(event.target.value)}
-                    maxLength={80} autoComplete="name" aria-describedby={inputError ? 'name-error' : undefined} />
-                  <button type="submit">Show me</button>
-                </div>
-                {inputError && <p className="field-error" id="name-error">{inputError}</p>}
-              </form>
-              <p className="example-note">Example: Michel can sound like “Misyel” or “Mikel.”</p>
-            </div>
-          )}
-
-          {stage === 'pronunciation' && (
-            <div className="journey-card pronunciation-stage">
-              <button className="back-link" type="button" onClick={() => setStage('name')}>← Change the name</button>
-              <p className="step-kicker">Step 2 of 3</p>
-              <h2>How do you say {confirmedName}?</h2>
-              <p>Choose the closest bigkas. You can also type your own.</p>
-              <div className="candidate-list" aria-label="Pronunciation choices">
-                {candidates.map((candidate) => (
-                  <button className="candidate-card" key={candidate.id} type="button" onClick={() => revealCandidate(candidate)}>
-                    <span><strong>{candidate.display}</strong><small>{candidate.label}</small></span>
-                    {candidate.recommended ? <em>Suggested</em> : <span aria-hidden="true">→</span>}
-                  </button>
-                ))}
+        {view === 'result' && computed.result && (
+          <section className="result-experience" id="result" aria-labelledby="result-heading">
+            <div className="result-card">
+              <p className="result-qualifier">One way to write {confirmedName} in modern Baybayin</p>
+              <h1 className="result-heading" id="result-heading" tabIndex={-1} ref={resultHeadingRef}>
+                {confirmedName} in Baybayin
+              </h1>
+              <div className="baybayin-hero" data-testid="baybayin-result" role="img"
+                aria-label={`Suggested modern Baybayin spelling for ${confirmedName}, interpreted as ${pronunciationDisplay}`}>
+                {computed.result.unicode}
               </div>
-              <div className="manual-pronunciation">
-                <label className="phonetic-label" htmlFor="phonetic">I say it differently<span>Write it the way it sounds.</span></label>
-                <div className="input-row">
-                  <input className="phonetic-input" id="phonetic" aria-label="Phonetic spelling" value={phonetic}
-                    onChange={(event) => { setPhonetic(event.target.value); setSelectedCandidate('user'); }} spellCheck={false} />
-                  <button type="button" onClick={revealEditedPronunciation}>Use this sound</button>
-                </div>
-                {computed.error && <p className="field-error">{computed.error}</p>}
-                {activeCandidate?.notes[0] && selectedCandidate !== 'user' && <p className="candidate-guidance">{activeCandidate.notes[0]}</p>}
+              <p className="result-name">{confirmedName}</p>
+              <div className="pronunciation-summary" id="result-context">
+                <span>We read this as: <strong>{pronunciationDisplay}</strong></span>
+                <button type="button" aria-expanded={pronunciationOpen} aria-controls="pronunciation-editor"
+                  onClick={() => { setPronunciationOpen((open) => !open); setDraftPhonetic(phonetic); setManualError(''); }}>
+                  Change pronunciation
+                </button>
               </div>
-            </div>
-          )}
 
-          {stage === 'result' && computed.result && (
-            <div className="result-experience">
-              <div className="result-panel result-reveal" id="result" aria-live="polite">
-                <div className="result-topline"><span>Step 3 of 3 · Your suggested Baybayin</span><span className="privacy-note">Private · nothing uploaded</span></div>
-                <div className={`glyph-preview flow-${textFlow} background-${imageBackground}`} data-testid="glyph-preview">
-                  <div className="baybayin-result interactive-result" data-testid="baybayin-result" aria-label={`${confirmedName} in Baybayin`}>
-                    {glyphs.map((glyph) => glyph.kind === 'separator' ? (
-                      <span className="glyph-separator" key={glyph.id}>{glyph.unicode}</span>
-                    ) : (
-                      <button className={`glyph-token ${selectedGlyphId === glyph.id ? 'selected' : ''}`} key={glyph.id}
-                        type="button" aria-label={`Explain ${glyph.token.source}`} aria-pressed={selectedGlyphId === glyph.id}
-                        onClick={() => setSelectedGlyphId(selectedGlyphId === glyph.id ? null : glyph.id)}>{glyph.token.unicode}</button>
+              {pronunciationOpen && (
+                <div className="pronunciation-editor" id="pronunciation-editor">
+                  <p>Choose the closest pronunciation (bigkas), or write your own.</p>
+                  <div className="candidate-list" role="radiogroup" aria-label="Pronunciation choices">
+                    {candidates.map((candidate) => (
+                      <button className="candidate-card" key={candidate.id} type="button" role="radio"
+                        aria-checked={selectedCandidate === candidate.id} onClick={() => chooseCandidate(candidate)}>
+                        <span><strong>{candidate.display}</strong><small>{candidate.label}</small></span>
+                        {candidate.recommended && <em>Suggested</em>}
+                      </button>
                     ))}
                   </div>
+                  <form className="manual-pronunciation" onSubmit={applyManualPronunciation} noValidate>
+                    <label htmlFor="phonetic">I say it differently <span>Write it the way it sounds.</span></label>
+                    <div className="input-row">
+                      <input id="phonetic" aria-label="Phonetic spelling" value={draftPhonetic}
+                        onChange={(event) => { setDraftPhonetic(event.target.value); setManualError(''); }} spellCheck={false} />
+                      <button type="submit">Use this sound</button>
+                    </div>
+                    {manualError && <p className="field-error" role="alert">{manualError}</p>}
+                  </form>
                 </div>
-                <div className="result-name">{confirmedName}</div>
-                <p className="tap-note">Tap a Baybayin symbol to learn what it does.</p>
-                <div className="conversion-trail" aria-label="How the name became Baybayin">
-                  <span><small>Your name</small><strong>{confirmedName}</strong></span><b aria-hidden="true">→</b>
-                  <span><small>How it sounds</small><strong>{syllableLine(computed.result)}</strong></span><b aria-hidden="true">→</b>
-                  <span><small>Baybayin</small><strong className="baybayin-trail">{computed.result.unicode}</strong></span>
+              )}
+
+              <div className="primary-result-actions">
+                <button type="button" onClick={copyResult}>{copyState === 'copied' ? 'Copied' : copyState === 'error' ? 'Copy failed' : 'Copy'}</button>
+                <button className="primary-action" type="button" onClick={() => runExport('image', async () => {
+                  const { downloadCardPng } = await import('./export/image');
+                  await downloadCardPng(confirmedName, computed.result!, textFlow);
+                })}>Save</button>
+                <button type="button" onClick={shareResult}>Share</button>
+              </div>
+              {(exportState || shareState || copyState !== 'idle') && (
+                <p className="action-status" role="status">
+                  {shareState || exportState || (copyState === 'copied' ? 'Baybayin copied.' : copyState === 'error' ? 'Copy failed.' : '')}
+                </p>
+              )}
+
+              <div className="transformation-trail" aria-label="How the name became Baybayin">
+                <span><small>Written name</small><strong>{confirmedName}</strong></span><b aria-hidden="true">→</b>
+                <span><small>We read it as</small><strong>{pronunciationDisplay}</strong></span><b aria-hidden="true">→</b>
+                <span><small>Syllables · pantig</small><strong>{syllableLine(computed.result)}</strong></span><b aria-hidden="true">→</b>
+                <span><small>Baybayin</small><strong className="baybayin-trail">{computed.result.unicode}</strong></span>
+              </div>
+
+              {computed.result.warnings.length > 0 && (
+                <ul className="result-warnings">{computed.result.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>
+              )}
+
+              <details className="result-disclosure why-disclosure">
+                <summary>Why is it written this way?</summary>
+                <div className="disclosure-body">
+                  <p>Baybayin follows sound. Pantig split “{pronunciationDisplay}” into syllables, then wrote each one below.</p>
+                  <div className="mapping-grid">
+                    {computed.result.renderings.map((rendering) => (
+                      <article className="mapping-card" key={rendering.syllable.index}>
+                        <div className="mapping-pair"><span>{rendering.syllable.source}</span><span aria-hidden="true">→</span><strong className="baybayin-inline">{rendering.unicode}</strong></div>
+                        <p>{rendering.explanation}</p>
+                      </article>
+                    ))}
+                  </div>
+                  <div className="glyph-learning">
+                    <p><strong>Explore the characters</strong><br />Select a symbol for a short explanation.</p>
+                    <div className="glyph-inspector" aria-label="Baybayin character explanations">
+                      {glyphs.map((glyph) => glyph.kind === 'separator' ? (
+                        <span className="glyph-separator" key={glyph.id}>{glyph.unicode}</span>
+                      ) : (
+                        <button className={selectedGlyphId === glyph.id ? 'selected' : ''} key={glyph.id}
+                          type="button" aria-label={`Explain ${glyph.token.source}`} aria-pressed={selectedGlyphId === glyph.id}
+                          onClick={() => setSelectedGlyphId(selectedGlyphId === glyph.id ? null : glyph.id)}>{glyph.token.unicode}</button>
+                      ))}
+                    </div>
+                    {selectedGlyph && (
+                      <div className="glyph-explanation" aria-live="polite">
+                        <strong><span className="baybayin-inline">{selectedGlyph.token.unicode}</span> writes “{selectedGlyph.token.source}”</strong>
+                        <p>{selectedGlyph.token.explanation}</p>
+                      </div>
+                    )}
+                  </div>
+                  {computed.result.analysis.adaptations.length > 0 && (
+                    <div className="adaptation-note"><strong>What Pantig changed</strong><ul>
+                      {computed.result.analysis.adaptations.map((adaptation) => <li key={`${adaptation.ruleId}-${adaptation.after}`}>{adaptation.explanation}</li>)}
+                    </ul></div>
+                  )}
+                  <p className="education-note">Another pronunciation may lead to another spelling. This is a learning aid, not an official spelling.</p>
                 </div>
-                <div className="glyph-explanation" aria-live="polite">
-                  {selectedGlyph ? <><strong><span className="baybayin-inline">{selectedGlyph.token.unicode}</span> writes “{selectedGlyph.token.source}”</strong><p>{selectedGlyph.token.explanation}</p></> : <p>Select a symbol above for a short explanation.</p>}
-                </div>
-                {computed.result.warnings.length > 0 && <ul className="result-warnings">{computed.result.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>}
-                <div className="primary-result-actions">
-                  <button type="button" onClick={copyResult}>{copyState === 'copied' ? 'Copied' : copyState === 'error' ? 'Copy failed' : 'Copy'}</button>
-                  <button className="primary-action" type="button" onClick={() => runExport('image', async () => { const { downloadCardPng } = await import('./export/image'); await downloadCardPng(confirmedName, computed.result!, textFlow); })}>Save image</button>
-                  <button type="button" onClick={shareResult}>Share</button>
-                </div>
-                {(exportState || shareState) && <p className="export-status" role="status">{shareState || exportState}</p>}
-                <details className="advanced-options">
-                  <summary>Writing and image options</summary>
-                  <p>Optional choices for comparing styles or customizing an image.</p>
+              </details>
+
+              <details className="result-disclosure options-disclosure">
+                <summary>More options</summary>
+                <div className="disclosure-body">
+                  <p>Compare writing styles or prepare a different image.</p>
                   <span className="option-label">Writing style</span>
                   <div className="convention-picker" role="radiogroup" aria-label="Writing convention">
                     {CONVENTIONS.map((item) => <button type="button" key={item.id} className={convention === item.id ? 'active' : ''}
@@ -339,30 +420,31 @@ function App() {
                         <span className={`background-swatch swatch-${item.id}`} /><small>{item.label}</small></button>)}
                     </div></div>
                   </div>
-                  <div className="secondary-downloads">
-                    <button type="button" onClick={() => runExport('styled PNG', async () => { const { downloadGlyphPng } = await import('./export/image'); await downloadGlyphPng(confirmedName, computed.result!, textFlow, imageBackground); })}>Download styled image</button>
-                    <button type="button" onClick={() => runExport('SVG card', async () => { const { downloadCardSvg } = await import('./export/image'); await downloadCardSvg(confirmedName, computed.result!, textFlow); })}>Download SVG</button>
+                  <div className={`export-preview flow-${textFlow} background-${imageBackground}`} data-testid="glyph-preview">
+                    <span>{computed.result.unicode}</span>
                   </div>
-                </details>
-                <p className="download-note">This is a suggested spelling, not the only valid one. For a tattoo or permanent design, ask an experienced Baybayin reader to review it.</p>
-                <div className="result-reset-actions"><button type="button" onClick={() => setStage('pronunciation')}>Change pronunciation</button><button type="button" onClick={() => setStage('name')}>Try another name</button></div>
-              </div>
-            </div>
-          )}
-        </section>
+                  <div className="secondary-downloads">
+                    <button type="button" onClick={() => runExport('styled PNG', async () => {
+                      const { downloadGlyphPng } = await import('./export/image');
+                      await downloadGlyphPng(confirmedName, computed.result!, textFlow, imageBackground);
+                    })}>Download styled image</button>
+                    <button type="button" onClick={() => runExport('SVG card', async () => {
+                      const { downloadCardSvg } = await import('./export/image');
+                      await downloadCardSvg(confirmedName, computed.result!, textFlow);
+                    })}>Download SVG</button>
+                  </div>
+                  <p className="permanent-note">For a tattoo or permanent design, ask an experienced Baybayin reader to review the pronunciation and spelling.</p>
+                </div>
+              </details>
 
-        {stage === 'result' && computed.result && (
-          <section className="explanation-section" aria-labelledby="explanation-title">
-            <div className="section-intro"><p className="eyebrow">See the breakdown</p><h2 id="explanation-title">How each pantig was written</h2><p>Each pantig is shown beside the Baybayin symbols used for it.</p></div>
-            <div className="mapping-grid">{computed.result.renderings.map((rendering) => <article className="mapping-card" key={rendering.syllable.index}>
-              <div className="mapping-pair"><span>{rendering.syllable.source}</span><span aria-hidden="true">→</span><strong className="baybayin-inline">{rendering.unicode}</strong></div><p>{rendering.explanation}</p></article>)}</div>
-            {computed.result.analysis.adaptations.length > 0 && <div className="adaptation-note"><strong>Sound changes</strong><ul>{computed.result.analysis.adaptations.map((adaptation) => <li key={`${adaptation.ruleId}-${adaptation.after}`}>{adaptation.explanation}</li>)}</ul></div>}
+              <button className="try-another" type="button" onClick={tryAnotherName}>Try another name</button>
+            </div>
           </section>
         )}
 
         <section className="method-section" id="method" aria-labelledby="method-title">
-          <p className="eyebrow">A quick note</p><h2 id="method-title">Baybayin follows sound, not English spelling.</h2>
-          <div className="method-copy"><p>Pantig asks how you say your name, breaks that bigkas into pantig, and shows a suggested Baybayin spelling you can inspect.</p>
+          <div><p className="eyebrow">A quick note</p><h2 id="method-title">Baybayin follows sound, not English spelling.</h2></div>
+          <div className="method-copy"><p>Pantig makes a best guess, shows how it read the name, and lets you change that pronunciation at any time.</p>
             <p>Pantig is a learning and transliteration aid. Its current rules and examples have not yet received expert linguistic review.</p>
             <div className="sources-note"><strong>Sources and notes</strong><p>Learn more from the{' '}
               <a href="https://www.nationalmuseum.gov.ph/exhibitions/anthropology/baybayin/" target="_blank" rel="noreferrer">National Museum of the Philippines</a>, the{' '}
@@ -373,9 +455,9 @@ function App() {
         </section>
       </main>
 
-      <footer className="flex min-h-[100px] items-center justify-between border-t border-line text-[13px] text-muted dark:text-[#9da8a2] max-[660px]:flex-col max-[660px]:items-start max-[660px]:justify-center max-[660px]:gap-2">
-        <span className="font-[760] tracking-[0.13em] text-ink uppercase">Pantig</span><span>Discover your name in Baybayin.{' '}
-          <a className="font-bold text-inherit underline-offset-4 hover:text-ink" href="https://github.com/ogbinar/baybayin" target="_blank" rel="noreferrer">View the code on GitHub</a></span>
+      <footer className="site-footer">
+        <span>Pantig</span><span>Discover your name in Baybayin.{' '}
+          <a href="https://github.com/ogbinar/baybayin" target="_blank" rel="noreferrer">View the code on GitHub</a></span>
       </footer>
     </div>
   );

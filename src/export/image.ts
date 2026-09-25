@@ -58,6 +58,12 @@ function conventionLabel(convention: Convention): string {
   return 'Traditional-style comparison';
 }
 
+function pronunciationLabel(value: string): string {
+  return value.replace(/(^|[ '\-])([a-z])/g, (_, separator: string, letter: string) =>
+    `${separator}${letter.toUpperCase()}`,
+  );
+}
+
 function syllableLine(result: TransliterationResult): string {
   return result.analysis.parts
     .map((part) => {
@@ -141,8 +147,8 @@ export async function createCardSvg(
     createElement(
       'div',
       { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
-      createElement('div', { style: { fontSize: 28, letterSpacing: '0.18em', textTransform: 'uppercase' } }, 'Pantig'),
-      createElement('div', { style: { fontSize: 22, color: '#745746' } }, conventionLabel(result.convention)),
+      createElement('div', { style: { fontSize: 28, fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase' } }, 'Pantig'),
+      createElement('div', { style: { fontSize: 20, color: '#745746' } }, conventionLabel(result.convention)),
     ),
     createElement(
       'div',
@@ -178,7 +184,8 @@ export async function createCardSvg(
         glyphContent(result.unicode, flow),
       ),
       createElement('div', { style: { fontSize: 56, marginTop: 34, letterSpacing: '-0.025em' } }, originalName),
-      createElement('div', { style: { fontSize: 26, marginTop: 16, color: '#745746' } }, syllableLine(result)),
+      createElement('div', { style: { fontSize: 24, marginTop: 16, color: '#745746' } }, `We read this as ${pronunciationLabel(result.input)}`),
+      createElement('div', { style: { fontSize: 20, marginTop: 9, color: '#745746' } }, syllableLine(result)),
     ),
     createElement(
       'div',
@@ -186,8 +193,8 @@ export async function createCardSvg(
       createElement(
         'div',
         { style: { display: 'flex', flexDirection: 'column', maxWidth: 670 } },
-        createElement('div', { style: { fontSize: 22, color: '#173d38' } }, 'Based on the pronunciation you selected.'),
-        createElement('div', { style: { fontSize: 17, color: '#745746', marginTop: 8 } }, 'Suggested spelling. Ask an experienced reader to check it before permanent use.'),
+        createElement('div', { style: { fontSize: 22, color: '#173d38' } }, 'One suggested way to write this name in Baybayin.'),
+        createElement('div', { style: { fontSize: 17, color: '#745746', marginTop: 8 } }, 'Another pronunciation or writing convention may produce a different result.'),
       ),
       createElement('div', { style: { width: 88, height: 8, borderRadius: 8, background: '#b96346' } }),
     ),

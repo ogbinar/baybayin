@@ -13,12 +13,13 @@ and not an authority that declares one universal spelling.
 The primary flow is:
 
 ```text
-name → pronunciation candidates → confirmed phonetic spelling
-     → syllables → Baybayin result → explanation/export
+name → recommended pronunciation → immediate Baybayin result
+     → inline pronunciation correction → explanation/export
 ```
 
-The user must be able to correct the phonetic spelling before treating the
-result as final.
+Pantig must label the pronunciation it used and let the user correct it inline.
+The immediate result is a best-effort suggestion, not confirmation of the
+person's actual pronunciation or one official spelling.
 
 ## V1 boundaries
 
@@ -140,22 +141,23 @@ Filipino-natural candidate when rules produce a distinct form.
 The interface reveals the result progressively:
 
 1. enter a written name;
-2. confirm one suggested pronunciation or edit the bigkas;
-3. reveal the Baybayin result and its conversion trail.
+2. immediately reveal the recommended Baybayin suggestion;
+3. show the pronunciation Pantig used and allow inline correction;
+4. reveal explanations and advanced options only when requested.
 
 The result screen contains:
 
 - the large Baybayin rendering as the page's primary visual focus;
-- original name and confirmed pronunciation;
-- a concise `name → pantig → Baybayin` conversion trail;
-- selectable Baybayin glyph clusters with plain-language explanations;
-- visible syllable chips;
+- original name and visible interpreted pronunciation;
+- a concise `name → pronunciation → pantig → Baybayin` conversion trail;
+- an optional “Why is it written this way?” section containing syllable and
+  selectable-glyph explanations;
 - primary copy, save-image, and share actions;
 - an optional advanced section containing Pamudpod, Virama, Traditional,
   horizontal/stacked layout, background, SVG, and styled-image controls;
 - light/dark appearance selector, initially following the system preference and
   remembering an explicit choice independently of image-export styling;
-- a per-syllable explanation;
+- an inline pronunciation editor with candidate and manual choices;
 - warnings for adaptations or ambiguity;
 - copy Unicode action;
 - download card, transparent PNG, and SVG actions;
@@ -201,16 +203,20 @@ The visible result, SVG, and PNG must derive from the same structured result.
 
 ## Acceptance criteria
 
-- A user can reach a result and understand it in under one minute.
+- A user can reach a result after one submission and understand it in under
+  one minute.
 - The generated Baybayin name is the dominant visual element on desktop while
   the input-first mobile order remains easy to use.
-- The result is not shown until the user confirms or edits the pronunciation.
+- The result is shown immediately from Pantig's recommended deterministic
+  pronunciation, which is visibly labeled and editable on the result screen.
 - The main result actions are Copy, Save image, and Share; writing conventions
   and image styling remain optional and collapsed by default.
-- Each visible glyph cluster can be selected with pointer or keyboard to show
-  its source sound and explanation.
-- The original name is never silently treated as its pronunciation.
-- Manual phonetic correction updates syllables and output without restarting.
+- Each glyph cluster in the optional explanation can be selected with pointer
+  or keyboard to show its source sound and explanation.
+- The original name is never silently treated as its pronunciation; Pantig's
+  interpretation appears beside the result.
+- Manual phonetic correction updates syllables and output without leaving the
+  result.
 - Every non-identity adaptation has a visible explanation.
 - Every output token is traceable to a syllable.
 - Traditional mode contains neither U+1714 nor U+1715.

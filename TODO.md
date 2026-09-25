@@ -77,7 +77,7 @@
   header, hero, responsive layout, and footer without changing Pantig's visual
   identity.
 
-## Discovery experience
+## Discovery experience (superseded by the direct-to-result refinement)
 
 - [x] Replace the always-visible workbench with a three-step name,
   pronunciation, and result reveal.
@@ -91,3 +91,22 @@
   image controls under optional writing and image options.
 - [x] Add crawlable fallback content, canonical and social metadata,
   structured data, robots, sitemap, and a social preview image.
+
+## Direct-to-result refinement
+
+- [x] Freeze the revised direct-to-result contract in `SPEC.md`.
+- [x] Replace the blocking pronunciation stage with an immediate recommended
+  result after one name submission.
+- [x] Start with a blank name input and compact first viewport.
+- [x] Add an inline “We read this as…” pronunciation editor on the result.
+- [x] Expand the trail to `name → pronunciation → pantig → Baybayin`.
+- [x] Move Copy, Save, and Share directly below the result.
+- [x] Consolidate teaching content under “Why is it written this way?”.
+- [x] Keep convention and export styling under collapsed “More options”.
+- [x] Replace the on-page checkerboard with a clean warm result surface.
+- [x] Refine the primary PNG/SVG share card hierarchy and branding.
+- [x] Complete focus, live-region, touch-target, contrast, and reduced-motion
+  checks.
+- [x] Update static fallback HTML, metadata, README, and browser tests.
+- [x] Run the full local verification gate before pushing.
+- [ ] Verify the exact pushed commit in Dokploy and smoke-test production.
